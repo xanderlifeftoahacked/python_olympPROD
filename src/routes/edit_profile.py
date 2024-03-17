@@ -55,7 +55,7 @@ async def loc_chosen(message: Message, state: FSMContext):
 
     await state.update_data(city=loc)
 
-    await UserRepository.update_by_id(message.from_user.id, {'city': city})
+    await UserRepository.update_by_id(message.from_user.id, {'city': city})  # noqa #type: ignore
     await message.answer(text=Templates.ST_CITY_CHANGED.value, reply_markup=kb_main)
     await state.set_state(None)
 
@@ -69,7 +69,7 @@ async def bio_chosen(message: Message, state: FSMContext):
         await message.answer(text=Templates.ST_BAD_BIO.value)
         return
 
-    await UserRepository.update_by_id(message.from_user.id, {'bio': bio})
+    await UserRepository.update_by_id(message.from_user.id, {'bio': bio})  # noqa #type: ignore
     await message.answer(text=Templates.ST_BIO_CHANGED.value)
     await state.set_state(None)
 
@@ -81,6 +81,6 @@ async def age_chosen(message: Message, state: FSMContext):
     if not re.fullmatch(age_regex, age):
         await message.answer(text=Templates.ST_BAD_AGE.value)
         return
-    await UserRepository.update_by_id(message.from_user.id, {'age': age})
+    await UserRepository.update_by_id(message.from_user.id, {'age': age})  # noqa #type: ignore
     await message.answer(text='Возраст изменен')
     await state.set_state(None)

@@ -20,7 +20,7 @@ router = Router()
 
 @router.message(F.text == Commands.MY_PROFILE.value)
 async def profile_handler(message: Message, state: FSMContext) -> None:
-    user_id = message.from_user.id
+    user_id = message.from_user.id  # noqa #type: ignore
     if await UserRepository.id_exists(user_id):
         await message.answer(Templates.ST_LOOK_OR_EDIT.value, reply_markup=kb_edit_profile)
     else:
@@ -79,7 +79,7 @@ async def city_good(message: CallbackQuery, state: FSMContext) -> None:
     user_data = await state.get_data()
     user_data['id'] = message.from_user.id
     await UserRepository.add_one(user_data)
-    await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_main, text=Templates.ST_REGISTERED.value)
+    await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_main, text=Templates.ST_REGISTERED.value)  # noqa #type: ignore
     await safe_message_edit(message, TemplatesGen.profile(user_data))
     await state.set_state(RegisterProfile.done)
 
