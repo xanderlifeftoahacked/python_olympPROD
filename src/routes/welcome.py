@@ -3,21 +3,18 @@ from aiogram import F
 from aiogram.types import Message
 from aiogram.filters import CommandStart
 
-
-from messages import *
-from utils import button
+from templates.welcome import *
+from commands.profile import *
+from keyboards.common import kb_main
 
 router = Router()
 
 
 @router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[
-                                         [button(m_register)], [button(m_info)]])
-
-    await message.answer("Добро пожаловать!", reply_markup=keyboard)
+    await message.answer("Добро пожаловать!", reply_markup=kb_main)
 
 
-@router.message(F.text == m_info)
+@router.message(F.text == Commands.INFO.value)
 async def info_handler(message: Message) -> None:
     await message.answer('Мы над этим работаем...')

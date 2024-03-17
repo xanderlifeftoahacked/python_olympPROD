@@ -1,35 +1,36 @@
 from aiogram import F, Router, types
-from aiogram.types import CallbackQuery, Message, message
-from aiogram.filters import StateFilter
+from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 import re
 
-from messages import *
+from commands.profile import *
+from templates.profile import *
 from restrictions import *
+from fsm.profile import *
 from repository import UserRepository
 from utils import safe_message_edit
-from keyboards import kb_edit_profile, kb_skip_setting, kb_is_valid, kb_reg
-from fsm import RegisterProfile
+from keyboards.profile import kb_edit_profile, kb_is_valid, kb_reg
+from keyboards.common import kb_main
+from keyboards.location import kb_get_location
 from validation import age_regex
-from maps_api.existance import check_city_existance, check_country_existance
-from templates import profile
+from maps_api.getlocation import get_country_city
 
 router = Router()
 
 
-@router.message(F.text == m_register)
-async def registration_handler(message: Message, state: FSMContext) -> None:
+@router.message(F.text == Commands.MY_PROFILE.value)
+async def profile_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
     if await UserRepository.id_exists(user_id):
-        await message.answer('Посмотреть или редактировать', reply_markup=kb_edit_profile)
+        await message.answer(Templates.ST_LOOK_OR_EDIT.value, reply_markup=kb_edit_profile)
     else:
-        await message.answer('Вы еще не зарегестрированы', reply_markup=kb_reg)
+        await message.answer(Templates.ST_NOT_REGISTERED.value, reply_markup=kb_reg)
 
 
-@router.callback_query(F.data == q_reg)
+@router.callback_query(F.data == Commands.REGISTER.value)
 async def start_reg(query: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(RegisterProfile.choosing_age)
-    await safe_message_edit(query, a_age)
+    await safe_message_edit(query, Templates.GET_AGE.value)
 
 
 @router.message(RegisterProfile.choosing_age)
@@ -37,11 +38,11 @@ async def age_handler(message: Message, state: FSMContext):
     age = str(message.text).strip()
 
     if not re.fullmatch(age_regex, age):
-        await message.answer(text='Неправильно указан возраст, попробуйте еще')
+        await message.answer(text=Templates.ST_BAD_AGE.value)
         return
 
     await state.update_data(age=age)
-    await message.answer(text=a_bio)
+    await message.answer(text=Templates.GET_BIO.value)
     await state.set_state(RegisterProfile.choosing_bio)
 
 
@@ -50,59 +51,40 @@ async def bio_handler(message: Message, state: FSMContext) -> None:
     bio = str(message.text).strip()
 
     if len(bio) > MAX_BIO_LEN:
-        await message.answer(text='Слишком длинный статус, попробуйте еще')
+        await message.answer(text=Templates.ST_BAD_BIO.value)
         return
 
     await state.update_data(bio=message.text)
-    await message.answer(text=a_country)
-    await state.set_state(RegisterProfile.choosing_country)
-
-
-@router.message(RegisterProfile.choosing_country)
-async def country_handler(message: Message, state: FSMContext) -> None:
-    country = check_country_existance(str(message.text).strip())
-    if not country:
-        await message.answer(text='Страна не найдена, попробуйте еще')
-        return
-
-    await state.update_data(country=country)
-    await message.answer(text=f'Правильно ли указана страна:\n{country}', reply_markup=kb_is_valid)
-
-
-@router.callback_query(F.data == q_good, RegisterProfile.choosing_country)
-async def country_good(message: CallbackQuery, state: FSMContext) -> None:
-    await safe_message_edit(message, a_city)
+    await message.answer(text=Templates.GET_CITY.value, reply_markup=kb_get_location)
     await state.set_state(RegisterProfile.choosing_city)
 
 
-@router.callback_query(F.data == q_bad, RegisterProfile.choosing_country)
-async def country_bad(message: CallbackQuery, state: FSMContext) -> None:
-    await safe_message_edit(message, a_country)
-
-
-@router.message(RegisterProfile.choosing_city)
+@router.message(RegisterProfile.choosing_city, F.location)
 async def city_handler(message: Message, state: FSMContext) -> None:
-    user_data = await state.get_data()
-    city = check_city_existance(
-        user_data['country'], str(message.text).strip())
-    if not city:
-        await message.answer(text='Город не найден, попробуйте еще')
+    if not message.location:
+        await message.answer(text=Templates.ST_BAD_LOC.value)
         return
 
-    await state.update_data(city=city)
-    await message.answer(text=f'Правильно ли указан город:\n{city}', reply_markup=kb_is_valid)
+    lat = message.location.latitude
+    lon = message.location.longitude
+    (country, city) = get_country_city(lat, lon)
+    loc = TemplatesGen.location(country, city)
+
+    await state.update_data(city=loc)
+    await message.answer(text=TemplatesGen.is_location_good(loc), reply_markup=kb_is_valid)
 
 
-@router.callback_query(F.data == q_good, RegisterProfile.choosing_city)
+@router.callback_query(F.data == Commands.GOOD.value, RegisterProfile.choosing_city)
 async def city_good(message: CallbackQuery, state: FSMContext) -> None:
     user_data = await state.get_data()
     user_data['id'] = message.from_user.id
     await UserRepository.add_one(user_data)
-    await safe_message_edit(message, profile(user_data))
+    await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_main, text=Templates.ST_REGISTERED.value)
+    await safe_message_edit(message, TemplatesGen.profile(user_data))
     await state.set_state(RegisterProfile.done)
 
 
-@router.callback_query(F.data == q_bad, RegisterProfile.choosing_city)
+@router.callback_query(F.data == Commands.BAD.value, RegisterProfile.choosing_city)
 async def city_bad(message: CallbackQuery, state: FSMContext) -> None:
-    await state.set_state(RegisterProfile.choosing_country)
-    await safe_message_edit(message, a_country)
+    await state.set_state(RegisterProfile.choosing_city)
+    await safe_message_edit(message, Templates.GET_CITY.value)
