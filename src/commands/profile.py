@@ -2,17 +2,12 @@ from enum import Enum
 
 
 class Commands(Enum):
-    MY_PROFILE = 'Мой профиль'
     EDIT_PROFILE = 'Редактировать профиль'
     REGISTER = 'Регистрация'
-    GOOD = 'Верно'
-    BAD = 'Повторить попытку'
     AGE = 'Возраст'
     BIO = 'Статус'
     PROFILE_DATA = 'Посмотреть профиль'
     LOCATION = 'Страна и город'
-    SKIP_SETTING = 'Оставить пустым'
-    INFO = 'Информация'
 
 
 # class Answers

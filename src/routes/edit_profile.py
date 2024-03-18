@@ -1,17 +1,17 @@
-from aiogram import F, Router, types
+from aiogram import F, Router
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 import re
 
 from commands.profile import *
+from commands.common import CommonCommands
 from templates.profile import *
 from restrictions import *
 from repository import UserRepository
 from utils import safe_message_edit
-from keyboards.location import kb_get_location
 from keyboards.common import kb_main
 from fsm.profile import SettingProfile
-from maps_api.getlocation import get_country_city
+from maps_api.getlocation import get_country_city, get_country_city_from_raw
 from validation import age_regex
 
 router = Router()
@@ -21,7 +21,9 @@ router = Router()
 async def check_profile(query: CallbackQuery, state: FSMContext) -> None:
     user_data = await UserRepository.select_by_id(query.from_user.id)
     if user_data:
-        await safe_message_edit(query, TemplatesGen.profile(user_data))
+        copy = user_data
+        copy['city'] = ', '.join(copy['city'][0:2])
+        await safe_message_edit(query, TemplatesGen.profile(copy))
 
 
 @router.callback_query(F.data == Commands.AGE.value)
@@ -50,17 +52,36 @@ async def loc_chosen(message: Message, state: FSMContext):
 
     lat = message.location.latitude
     lon = message.location.longitude
-    (country, city) = get_country_city(lat, lon)
+    (country, city, coords) = get_country_city(lat, lon)
+
+    if not country or not city:
+        await message.answer(text=Templates.ST_BAD_LOC.value)
+        return
+
     loc = TemplatesGen.location(country, city)
-
-    await state.update_data(city=loc)
-
-    await UserRepository.update_by_id(message.from_user.id, {'city': city})  # noqa #type: ignore
-    await message.answer(text=Templates.ST_CITY_CHANGED.value, reply_markup=kb_main)
+    await state.update_data(city=(country, city, coords))
+    await UserRepository.update_by_id(message.from_user.id, {'city': (country, city, coords)})  # noqa #type: ignore
+    await message.answer(text=TemplatesGen.city_changed(loc), reply_markup=kb_main)
     await state.set_state(None)
 
 
-@router.message(SettingProfile.choosing_bio)
+@router.message(SettingProfile.choosing_location, ~F.text.startswith('/'), F.text != CommonCommands.MAIN_MENU)
+async def loc_chosen_str(message: Message, state: FSMContext) -> None:
+    (country, city, coords) = get_country_city_from_raw(message.text)  # noqa #type: ignore
+
+    if not country or not city:
+        await message.answer(text=Templates.ST_BAD_LOC.value)
+        return
+
+    loc = TemplatesGen.location(country, city)
+
+    await state.update_data(city=(country, city, coords))
+    await UserRepository.update_by_id(message.from_user.id, {'city': (country, city, coords)})  # noqa #type: ignore
+    await message.answer(text=TemplatesGen.city_changed(loc), reply_markup=kb_main)
+    await state.set_state(None)
+
+
+@router.message(SettingProfile.choosing_bio, ~F.text.startswith('/'))
 async def bio_chosen(message: Message, state: FSMContext):
     await state.update_data(chooseen_age=message.text)
     bio = str(message.text).strip()
@@ -74,7 +95,7 @@ async def bio_chosen(message: Message, state: FSMContext):
     await state.set_state(None)
 
 
-@router.message(SettingProfile.choosing_age)
+@router.message(SettingProfile.choosing_age, ~F.text.startswith('/'))
 async def age_chosen(message: Message, state: FSMContext):
     await state.update_data(chooseen_age=message.text)
     age = str(message.text).strip()

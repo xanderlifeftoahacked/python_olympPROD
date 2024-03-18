@@ -4,7 +4,7 @@ from enum import Enum
 class Templates(Enum):
     GET_AGE = 'Введите ваш возраст:'
     GET_BIO = 'Введите информацию о себе:'
-    GET_CITY = 'Отправьте свое местоположение:'
+    GET_CITY = 'Отправьте свое местоположение:\nЕсли вы с компьютера, напишите свой город в сообщении'
 
     ST_LOOK_OR_EDIT = 'Посмотреть или редактировать'
     ST_NOT_REGISTERED = 'Вы еще не зарегестрированы'
@@ -21,11 +21,16 @@ class TemplatesGen:
     def profile(cls, user_data):
         return f'''    <u>Ваш профиль</u>
 
+        Уникальный ID: <b>{user_data['id']} </b>
         Возраст: <b>{user_data['age']}</b>
         Описание: <b>{user_data['bio']}</b>
         Местоположение: <b>{user_data['city']}</b>
 
             '''
+
+    @classmethod
+    def city_changed(cls, city):
+        return f'Город изменен: {city}'
 
     @classmethod
     def location(cls, country, city):

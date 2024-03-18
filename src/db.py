@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import JSON, Column, Integer, String, Boolean
@@ -17,8 +15,7 @@ class UserTable(Model):
 
     id = Column(Integer, primary_key=True)
     age = Column(Integer, nullable=True)
-    country = Column(String, nullable=True)
-    city = Column(String, nullable=True)
+    city = Column(JSON, nullable=True)
     bio = Column(String, nullable=True)
     travels = Column(JSON, nullable=True)
 
@@ -28,9 +25,11 @@ class TravelTable(Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    locations = Column(JSON, nullable=True)
+    description = Column(String, nullable=True)
+    places = Column(JSON, nullable=True)
     friends = Column(JSON, nullable=True)
     is_data_private = Column(Boolean, nullable=True, default=False)
+    markups = Column(JSON, nullable=True)
 
 
 async def create_tables():

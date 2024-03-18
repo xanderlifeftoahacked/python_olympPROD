@@ -7,7 +7,9 @@ class UserRepository:
     @classmethod
     async def add_one(cls, data: dict) -> Column[int]:
         async with db.new_session() as session:
-            user = db.UserTable(**data)
+            valid_data = {key: value for key, value in data.items(
+            ) if key in db.UserTable.__table__.columns.keys()}
+            user = db.UserTable(**valid_data)
             session.add(user)
             await session.flush()
             await session.commit()
@@ -41,3 +43,36 @@ class UserRepository:
                 await session.commit()
             else:
                 raise ValueError(f"User with ID {user_id} not found.")
+
+
+class TravelRepository:
+    @classmethod
+    async def add_one(cls, data: dict) -> Column[int]:
+        async with db.new_session() as session:
+            valid_data = {key: value for key, value in data.items(
+            ) if key in db.TravelTable.__table__.columns.keys()}
+            travel = db.TravelTable(**valid_data)
+            session.add(travel)
+            await session.flush()
+            await session.commit()
+            return travel.id
+
+    @classmethod
+    async def select_by_id(cls, id: int) -> dict | None:
+        async with db.new_session() as session:
+            travel = await session.get(db.TravelTable, id)
+            if not travel:
+                return None
+            return travel.__dict__
+
+    @classmethod
+    async def update_by_id(cls, id: int, data: dict) -> None:
+        async with db.new_session() as session:
+            travel = await session.get(db.TravelTable, id)
+            if travel:
+                for key, value in data.items():
+                    setattr(travel, key, value)
+                await session.flush()
+                await session.commit()
+            else:
+                raise ValueError(f"Travel with id {id} not found.")
