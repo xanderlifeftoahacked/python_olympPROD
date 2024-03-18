@@ -14,7 +14,7 @@ from keyboards.profile import kb_edit_profile, kb_is_valid, kb_reg
 from keyboards.common import kb_main
 from keyboards.location import kb_get_location
 from validation import age_regex
-from maps_api.getlocation import get_country_city, get_country_city_from_raw
+from api.getlocation import get_country_city, get_country_city_from_raw
 
 router = Router()
 
@@ -22,6 +22,7 @@ router = Router()
 @router.message(F.text == CommonCommands.MY_PROFILE.value)
 async def profile_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id  # noqa #type: ignore
+    await state.set_state(None)
     if await UserRepository.id_exists(user_id):
         await message.answer(Templates.ST_LOOK_OR_EDIT.value, reply_markup=kb_edit_profile)
     else:

@@ -25,11 +25,11 @@ class UserRepository:
                 return False
 
     @classmethod
-    async def select_by_id(cls, id: int) -> dict | None:
+    async def select_by_id(cls, id: int) -> dict:
         async with db.new_session() as session:
             user = await session.get(db.UserTable, id)
             if not user:
-                return None
+                return {}
             return user.__dict__
 
     @classmethod
@@ -58,12 +58,23 @@ class TravelRepository:
             return travel.id
 
     @classmethod
-    async def select_by_id(cls, id: int) -> dict | None:
+    async def select_by_id(cls, id: int) -> dict:
         async with db.new_session() as session:
             travel = await session.get(db.TravelTable, id)
             if not travel:
-                return None
+                return {}
             return travel.__dict__
+
+    @classmethod
+    async def remove_by_id(cls, id: int) -> dict:
+        async with db.new_session() as session:
+            travel = await session.get(db.TravelTable, id)
+            if travel:
+                await session.delete(travel)
+                await session.flush()
+                await session.commit()
+                return travel.__dict__
+            return {}
 
     @classmethod
     async def update_by_id(cls, id: int, data: dict) -> None:
@@ -76,3 +87,12 @@ class TravelRepository:
                 await session.commit()
             else:
                 raise ValueError(f"Travel with id {id} not found.")
+
+    @classmethod
+    async def name_exists(cls, name: str, owner: int) -> bool:
+        async with db.new_session() as session:
+            travel = await session.execute(select(db.TravelTable).where(db.TravelTable.name == name, db.TravelTable.owner == owner))
+            if travel.scalar():
+                return True
+            else:
+                return False

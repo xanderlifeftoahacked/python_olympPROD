@@ -11,7 +11,7 @@ from repository import UserRepository
 from utils import safe_message_edit
 from keyboards.common import kb_main
 from fsm.profile import SettingProfile
-from maps_api.getlocation import get_country_city, get_country_city_from_raw
+from api.getlocation import get_country_city, get_country_city_from_raw
 from validation import age_regex
 
 router = Router()

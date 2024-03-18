@@ -7,6 +7,10 @@ def inline_button(s: str) -> InlineKeyboardButton:
     return InlineKeyboardButton(text=s, callback_data=s)
 
 
+def inline_button_with_id(s: str, id) -> InlineKeyboardButton:
+    return InlineKeyboardButton(text=s, callback_data=f'{s}:{id}')
+
+
 def button_loc(s: str) -> KeyboardButton:
     return KeyboardButton(text=s, callback_data=s, request_location=True)
 

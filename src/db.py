@@ -24,6 +24,7 @@ class TravelTable(Model):
     __tablename__ = 'travels'
 
     id = Column(Integer, primary_key=True)
+    owner = Column(Integer)
     name = Column(String)
     description = Column(String, nullable=True)
     places = Column(JSON, nullable=True)

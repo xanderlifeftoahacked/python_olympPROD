@@ -10,3 +10,4 @@ class CommonCommands(Enum):
     BAD = 'Повторить попытку'
     MAIN_MENU = 'Выйти в главное меню'
     END_INPUT = 'Завершить ввод'
+    GO_BACK = 'Назад'

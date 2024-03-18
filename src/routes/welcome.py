@@ -13,7 +13,8 @@ router = Router()
 
 
 @router.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
+async def command_start_handler(message: Message, state: FSMContext) -> None:
+    await state.set_state(None)
     await message.answer("Добро пожаловать!", reply_markup=kb_main)
 
 
