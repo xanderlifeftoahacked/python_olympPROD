@@ -8,3 +8,5 @@ class Templates(Enum):
     SELECT_MARKUP = 'Список доступных вам заметок'
     SEND_FILE = 'Отправьте файл (не больше 20 МБ)'
     FILE_SENDED = 'Заметка сохранена!'
+    GET_MARKUP = 'Получить'
+    DELETE_MARKUP = 'Удалить'

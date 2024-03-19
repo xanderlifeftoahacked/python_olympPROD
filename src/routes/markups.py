@@ -6,7 +6,7 @@ from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, callback_
 from aiogram.fsm.context import FSMContext
 
 from fsm.markups import AddMarkup
-from storage import FILES_PATH, validate_path
+from storage import FILES_PATH, transliterate, validate_path
 from templates.markups import *
 from repository import TravelRepository, UserRepository
 from restrictions import *
@@ -38,7 +38,7 @@ async def list_markups_handler(message: CallbackQuery, state: FSMContext) -> Non
         await safe_message_edit(message, Templates.NO_MARKUPS.value, kb_go_back_generate(full_id))  # noqa #type: ignore
         return
     if owner == user_id:
-        await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(travel_data['markups'], full_id, user_id))
+        await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(travel_data['markups'], full_id))
         return
 
     else:
@@ -47,7 +47,7 @@ async def list_markups_handler(message: CallbackQuery, state: FSMContext) -> Non
         if not len(visible_markups):
             await safe_message_edit(message, Templates.NO_VISIBLE_MARKUPS.value, kb_go_back_generate(full_id))  # noqa #type: ignore
             return
-        await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(visible_markups, full_id, user_id))
+        await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(visible_markups, full_id))
 
 
 @router.callback_query(F.data.startswith(Commands.ADD_MARKUP.value))
@@ -80,12 +80,11 @@ async def add_public_markup_handler(message: CallbackQuery, state: FSMContext) -
 @router.message(AddMarkup.adding_private, ~F.text.startswith('/'), F.document)
 async def sent_markup(message: Message, state: FSMContext) -> None:
     state_data = await state.get_data()
-    print(state_data)
     user_id = message.from_user.id  # noqa #type: ignore
 
     file_id = message.document.file_id  # noqa #type: ignore
     file = await message.bot.get_file(file_id)  # noqa #type: ignore
-    name = message.document.file_name  # noqa #type: ignore
+    name = transliterate(message.document.file_name)  # noqa #type: ignore
     file_path = file.file_path
     path_to_save = validate_path(str(state_data['travel_id']))
 
@@ -95,7 +94,6 @@ async def sent_markup(message: Message, state: FSMContext) -> None:
         visible = True
     else:
         visible = False
-
     if 'markups' not in travel_data or not travel_data['markups']:
         travel_data['markups'] = []
     travel_data['markups'].append((name, visible, user_id))

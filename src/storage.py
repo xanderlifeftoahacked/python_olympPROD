@@ -5,6 +5,14 @@ from pathlib import Path
 
 FILES_PATH = './media/'
 
+symbols = (u"абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",
+           u"abvgdeejzijklmnoprstufhzcss_y_euaABVGDEEJZIJKLMNOPRSTUFHZCSS_Y_EUA")
+tr = {ord(a): ord(b) for a, b in zip(*symbols)}
+
+
+def transliterate(string: str):
+    return string.translate(tr)
+
 
 def validate_path(path):
     Path(FILES_PATH + path).mkdir(parents=True, exist_ok=True)
