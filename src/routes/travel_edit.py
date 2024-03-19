@@ -3,23 +3,20 @@ from aiogram import Router
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State
-from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove, callback_query
+from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from templates.travel import *
 from repository import TravelRepository, UserRepository
 from restrictions import *
 from commands.travel import *
-from fsm.travel import AddTravel, EditTravel
+from fsm.travel import EditTravel
 from commands.common import CommonCommands
 from api.getlocation import get_location, get_location_from_raw
 from api.gettime import get_date_obj, get_date_str_from_obj, get_current_date
-from keyboards.profile import kb_reg
 from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friends_generate, kb_travel_places_generate
-from keyboards.common import kb_main, kb_input, kb_is_valid
-from keyboards.location import kb_get_location
+from keyboards.common import kb_input, kb_is_valid
 from keyboards.travel import kb_travel_menu, kb_travel_actions_generate
-from templates.profile import Templates as TemplatesProfile
 from utils import safe_message_edit
 import validation
 

@@ -9,6 +9,7 @@ import db
 from excmidlleware import ExcHandlerMiddleware
 from routes.profile_add import router as registration_router
 from routes.welcome import router as welcome_router
+from routes.markups import router as markup_router
 from routes.profile_edit import router as edit_profile_router
 from routes.travel_add import router as travel_add_router
 from routes.travel_edit import router as travel_edit_router
@@ -19,7 +20,7 @@ TOKEN = '7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw'
 dp = Dispatcher()
 # dp.message.middleware(ExcHandlerMiddleware())
 dp.include_routers(registration_router, welcome_router,
-                   edit_profile_router, travel_add_router, travel_edit_router)
+                   edit_profile_router, travel_add_router, travel_edit_router, markup_router)
 
 
 async def main() -> None:

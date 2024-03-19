@@ -29,7 +29,7 @@ class TravelTable(Model):
     description = Column(String, nullable=True)
     places = Column(JSON, nullable=True)
     friends = Column(JSON, nullable=True)
-    is_data_private = Column(Boolean, nullable=True, default=False)
+    # is_data_private = Column(Boolean, nullable=True, default=False)
     markups = Column(JSON, nullable=True)
 
 

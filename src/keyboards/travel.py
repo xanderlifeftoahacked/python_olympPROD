@@ -1,18 +1,16 @@
 from aiogram import types
 from utils import inline_button, button, inline_button_with_id
 from commands.travel import *
+from commands.markups import Commands as MarkupCommands
 from commands.common import CommonCommands
 
 kb_travel_menu = types.ReplyKeyboardMarkup(keyboard=[[button(Commands.ADD_TRAVEL.value)], [button(
     Commands.LIST_TRAVELS.value)], [button(CommonCommands.MAIN_MENU.value)]], resize_keyboard=True)
 
-kb_travel_actions = types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(
-    Commands.HELP_TRAVEL.value)], [inline_button(Commands.EDIT_TRAVEL.value), inline_button(Commands.DELETE_TRAVEL.value)]])
-
 
 def kb_travel_actions_generate(id):
     return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button_with_id(
-        Commands.HELP_TRAVEL.value, id)], [inline_button_with_id(Commands.EDIT_TRAVEL.value, id), inline_button_with_id(Commands.DELETE_TRAVEL.value, id)]])
+        Commands.HELP_TRAVEL.value, id)], [inline_button_with_id(MarkupCommands.LIST_MARKUPS.value, id), inline_button_with_id(MarkupCommands.ADD_MARKUP.value, id)], [inline_button_with_id(Commands.EDIT_TRAVEL.value, id), inline_button_with_id(Commands.DELETE_TRAVEL.value, id)]])
 
 
 def kb_travel_friends_generate(friends, id):
@@ -53,4 +51,4 @@ def kb_travel_delete_generate(id):
 
 def kb_travel_friend_actions_generate(id):
     return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button_with_id(
-        Commands.HELP_TRAVEL.value, id)]])
+        Commands.HELP_TRAVEL.value, id)], [inline_button_with_id(MarkupCommands.LIST_MARKUPS.value, id), inline_button_with_id(MarkupCommands.ADD_MARKUP.value, id)]])

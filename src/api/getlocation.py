@@ -5,14 +5,16 @@ geolocator = Nominatim(user_agent='xander_travelbot')
 
 
 def get_location_from_raw(loc: str) -> Any:
-    location = geolocator.geocode(loc, language='ru')
+    location = geolocator.geocode(loc, language='ru')  # noqa #type: ignore
+
     if not location:
         return None
     return location.address  # noqa #type: ignore
 
 
 def get_location(lat: float, lon: float) -> Any:
-    location = geolocator.reverse((lat, lon), language='ru')
+    location = geolocator.reverse((lat, lon), language='ru')  # noqa #type: ignore
+
     if not location:
         return None
     return location.address  # noqa #type: ignore
