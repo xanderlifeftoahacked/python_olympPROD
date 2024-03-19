@@ -6,3 +6,5 @@ class Commands(Enum):
     ADD_MARKUP = 'Добавить заметку'
     PRIVATE = 'Приватную'
     PUBLIC = 'Публичную'
+
+    DELETE_MARKUP = 'Удалить'

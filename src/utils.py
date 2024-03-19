@@ -28,5 +28,6 @@ async def safe_message_edit(
         return
     try:
         await callback.message.edit_text(new_text, reply_markup=reply_markup)  # noqa #type: ignore
-    except TelegramBadRequest:
+    except TelegramBadRequest as e:
+        print(e)
         await callback.answer(None)

@@ -11,3 +11,5 @@ class CommonCommands(Enum):
     MAIN_MENU = 'Выйти в главное меню'
     END_INPUT = 'Завершить ввод'
     GO_BACK = 'Назад'
+
+    DELETE_TRAVEL = 'Удалить'

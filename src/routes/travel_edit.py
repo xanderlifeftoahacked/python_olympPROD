@@ -130,7 +130,9 @@ async def edited_name_handler(message: Message, state: FSMContext) -> None:
 
 @ router.callback_query(F.data.startswith(CommonCommands.GO_BACK.value))
 async def menu_go_back_handler(message: CallbackQuery, state: FSMContext) -> None:
+    await state.set_state(None)
     full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
+    print(full_id)
     travel_id = int(full_id.split(':')[0])  # noqa #type: ignore
     shown_id = int(full_id.split(':')[1])  # noqa #type: ignore
 

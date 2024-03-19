@@ -77,7 +77,7 @@ async def select_desc_handler(message: Message, state: FSMContext) -> None:
     await state.update_data(description=desc)
     await state.update_data(places=[])
     await state.set_state(AddTravel.choosing_places)
-    await message.answer(text=Templates.ADD_PLACE.value, reply_markup=kb_get_location)
+    await message.answer(text=Templates.ADD_PLACE.value)
 
 
 @router.message(AddTravel.choosing_places, F.location)
@@ -193,4 +193,4 @@ async def end_input_handler(message: CallbackQuery, state: FSMContext) -> None:
     else:
         await UserRepository.update_by_id(message.from_user.id, {'travels': [travel_id]})  # noqa #type: ignore
     # await message.bot.send_message(reply_markup=kb_travel_menu)   # noqa #type: ignore
-    await safe_message_edit(message, TemplatesGen.travel(data, len_t + 1), reply_markup=kb_travel_actions_generate(f'{len_t+1}:{len_t+1}'))  # noqa #type: ignore
+    await safe_message_edit(message, TemplatesGen.travel(data, len_t + 1))  # noqa #type: ignore
