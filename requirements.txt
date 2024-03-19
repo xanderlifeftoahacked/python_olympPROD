@@ -2,4 +2,5 @@ sqlalchemy
 aiosqlite
 aiogram
 geopy
+pyowm
 dateparser
