@@ -35,6 +35,7 @@ class Templates(Enum):
     ADDED_ONE_PLACE = 'Место успешно добавлено!'
     SURE_DELETING = 'Вы уверены, что хотите удалить это путешествие?'
     TRAVEL_DELETED = 'Путешествие удалено'
+    SELECT_HELPER = 'Выберите, что хотите увидеть'
 
 
 class TemplatesGen:

@@ -36,11 +36,17 @@ async def gist_post(data: str) -> requests.Response:
                          data=generate_gist_data_json(data))
 
 
-async def try_to_build_route(locations: List[List[str]]) -> Tuple[bool, str]:
-    locations_with_coords = [[get_coords_from_raw(
-        location[0]), location[1], location[2]] for location in locations]
-    sorted_locations = sorted(locations_with_coords,
-                              key=lambda x: x[1])
+async def try_to_build_route(locations: List[List[str]], from_raw=True) -> Tuple[bool, str]:
+    if from_raw:
+        locations_with_coords = [[get_coords_from_raw(
+            location[0]), location[1], location[2]] for location in locations]
+        sorted_locations = sorted(locations_with_coords,
+                                  key=lambda x: x[1])
+    else:
+        locations_with_coords = [[get_coords_from_raw(
+            location[0]), None, None] for location in locations]
+        sorted_locations = locations_with_coords
+
     points = '&point='.join([','.join([str(location[0][0]), str(location[0][1])])
                              for location in sorted_locations])
     get_route_url = f'{graphhopper_url}route?point={points}&vehicle=car&key={GRAPHHOPPER_TOKEN}'
