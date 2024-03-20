@@ -13,7 +13,7 @@ from commands.travel import *
 from fsm.travel import EditTravel
 from commands.common import CommonCommands
 from api.getlocation import get_location, get_location_from_raw
-from api.gettime import get_date_obj, get_date_str_from_obj, get_current_datetime
+from api.gettime import get_date_formatted, get_date_obj, get_date_str_from_obj, get_current_datetime
 from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friend_actions_generate, kb_travel_friends_generate, kb_travel_places_generate
 from keyboards.common import kb_input, kb_is_valid
 from keyboards.travel import kb_travel_menu, kb_travel_actions_generate
@@ -271,9 +271,9 @@ async def select_date_handler(message: Message, state: FSMContext) -> None:
             return
 
     if cur_state == EditTravel.choosing_date_start:
-        await state.update_data(start_time=get_date_str_from_obj(date_obj))
+        await state.update_data(start_time=get_date_formatted(date_obj))
     else:
-        await state.update_data(end_time=get_date_str_from_obj(date_obj))
+        await state.update_data(end_time=get_date_formatted(date_obj))
 
     await message.answer(text=TemplatesGen.is_date_good(get_date_str_from_obj(date_obj)), reply_markup=kb_is_valid)
 
