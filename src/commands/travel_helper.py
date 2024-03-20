@@ -2,4 +2,6 @@ from enum import Enum
 
 
 class Commands(Enum):
-    MAKE_ROUTE = 'Построить маршрут'
+    MAKING_ROUTES = 'Построение маршрутов'
+    MAKE_ROUTE_TO_START = 'Маршрут до первой точки'
+    MAKE_ROUTE_OF_TRAVEL = 'Маршрут по точкам путешествия'
