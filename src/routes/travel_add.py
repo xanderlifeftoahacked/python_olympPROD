@@ -14,7 +14,6 @@ from api.getlocation import get_location, get_location_from_raw
 from api.gettime import get_date_obj, get_date_str_from_obj, get_current_datetime
 from keyboards.profile import kb_reg
 from keyboards.common import kb_input, kb_is_valid
-from keyboards.location import kb_get_location
 from keyboards.travel import kb_travel_actions_generate, kb_travel_menu, kb_travel_friend_actions_generate
 from templates.profile import Templates as TemplatesProfile
 from utils import safe_message_edit
