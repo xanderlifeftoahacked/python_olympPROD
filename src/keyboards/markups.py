@@ -16,11 +16,10 @@ def kb_go_back_generate(id):
 
 def kb_show_markups_generate(markups, id):
     if markups:
-        print(markups)
         keyboard = []
         for markup in markups:
             show_button = types.InlineKeyboardButton(
-                text=markup[0], callback_data=f'{markup[0]}:{id}')
+                text=markup[0], callback_data=f'{markup[0]}:{markup[2]}:{id}')
             keyboard.append([show_button])
 
         keyboard.append([inline_button_with_id(
@@ -30,6 +29,7 @@ def kb_show_markups_generate(markups, id):
     return types.InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-def kb_markup_actions_generate(markup, id, user_id):
-    if user_id == markup[2]:
-        return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button_with_id(markup[0], id)]])
+def kb_markup_actions_generate(full_travel_id, user_id, owner_id):
+    if str(user_id) == str(owner_id):
+        return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(MarkupCommands.GET_MARKUP.value), inline_button(MarkupCommands.DELETE_MARKUP.value)], [inline_button_with_id(CommonCommands.GO_BACK.value, full_travel_id)]])
+    return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(MarkupCommands.GET_MARKUP.value)], [inline_button_with_id(CommonCommands.GO_BACK.value, full_travel_id)]])

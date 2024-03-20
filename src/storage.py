@@ -1,4 +1,5 @@
 import asyncio
+from os.path import isfile
 import aiofiles
 import os
 from pathlib import Path
@@ -19,31 +20,11 @@ def validate_path(path):
     return FILES_PATH + path
 
 
-def decode_filename(name):
-    pass
+def delete_file(travel_id, filename):
+    fullpath = f'{FILES_PATH}{travel_id}/{filename}'
+    if os.path.isfile(fullpath):
+        os.remove(fullpath)
 
 
-def encode_filename(name):
-    pass
-    # class StaticAsyncStorage:
-    #     @staticmethod
-    #     async def save_file(travel_id, file_name, file_content):
-    #         file_path = f'{travel_id}/{file_name}'
-    #         async with aiofiles.open(file_path, 'wb') as f:
-    #             await f.write(file_content)
-    #         return file_path
-    #
-    #     @staticmethod
-    #     def get_path(travel_id, file_name)
-    #
-    #     @staticmethod
-    #     async def read_file(travel_id, file_name):
-    #         file_path = f'{travel_id}/{file_name}'
-    #         async with aiofiles.open(file_path, 'rb') as f:
-    #             file_content = await f.read()
-    #         return file_content
-    #
-    #     @staticmethod
-    #     async def list_files(storage_path):
-    #         files = os.listdir(storage_path)
-    #         return files
+def get_file_path(travel_id, filename):
+    return f'{FILES_PATH}{travel_id}/{filename}'

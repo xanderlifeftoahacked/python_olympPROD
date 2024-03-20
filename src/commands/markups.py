@@ -7,4 +7,6 @@ class Commands(Enum):
     PRIVATE = 'Приватную'
     PUBLIC = 'Публичную'
 
+    GET_MARKUP = 'Получить'
     DELETE_MARKUP = 'Удалить'
+    SELECT_MARKUP = 'Выбрать'
