@@ -1,5 +1,6 @@
 venv/
 cache/
+route_map.html
 __pycache__
 media/*
 !media/.gitkeep
