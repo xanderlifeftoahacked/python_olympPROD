@@ -1,7 +1,7 @@
 from collections.abc import Awaitable, Callable
 from typing import Any, Dict
-from aiogram import BaseMiddleware, Bot
-from aiogram.types import CallbackQuery, Message, User
+from aiogram import BaseMiddleware
+from aiogram.types import Message
 from sqlalchemy.inspection import exc
 from geopy import exc
 
