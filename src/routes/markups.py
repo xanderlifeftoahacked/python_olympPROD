@@ -1,28 +1,19 @@
 from aiogram import Router
 from aiogram import F
-from aiogram.dispatcher.event.handler import CallbackType
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, FSInputFile, Message, ReplyKeyboardRemove, callback_query
+from aiogram.types import CallbackQuery, FSInputFile, Message
 from aiogram.fsm.context import FSMContext
 
 from fsm.markups import AddMarkup, Markup
 from storage import delete_file, get_file_path,  transliterate, validate_path
 from templates.markups import *
-from repository import TravelRepository, UserRepository
+from repository import TravelRepository
 from restrictions import *
-from fsm.travel import AddTravel
 from commands.markups import *
-from commands.common import CommonCommands
-from api.getlocation import get_location, get_location_from_raw
-from api.gettime import get_current_datetime, get_date_obj, get_date_str_from_obj
-from keyboards.profile import kb_reg
-from keyboards.travel import kb_travel_actions_generate, kb_travel_menu
-from keyboards.common import kb_main, kb_input, kb_is_valid
-from keyboards.location import kb_get_location
+from api.gettime import get_current_datetime
+from keyboards.travel import kb_travel_menu
 from keyboards.markups import kb_markup_actions_generate, kb_select_type, kb_go_back_generate, kb_show_markups_generate
-from templates.profile import Templates as TemplatesProfile
 from utils import safe_message_edit
-# from templates.profile import *
 
 router = Router()
 
@@ -124,7 +115,7 @@ async def sent_markup(message: Message, state: FSMContext) -> None:
         filename = transliterate(message.document.file_name)  # noqa #type: ignore
         await message.bot.download(file=file_id, destination=f'{path_to_save}/{filename}')  # noqa #type: ignore
     else:
-        filename = f'{str(get_current_datetime()).replace(":", "-")}.jpg'
+        filename = f'{str(get_current_datetime()).replace(":", "-")}.jpg'  # noqa #type: ignore
         await message.bot.download(file=message.photo[-1].file_id, destination=f'{path_to_save}/{filename}')  # noqa #type: ignore
 
     travel_data = await TravelRepository.select_by_id(state_data['travel_id'])
