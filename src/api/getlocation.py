@@ -1,7 +1,12 @@
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent='xander_travelbot')
+
+
+def get_coords_from_raw(loc: str) -> List[float]:
+    location = geolocator.geocode(loc, language='ru')  # noqa #type: ignore
+    return [location.latitude, location.longitude]  # noqa #type: ignore
 
 
 def get_location_from_raw(loc: str) -> Any:
