@@ -17,6 +17,7 @@ from api.gettime import get_date_formatted, get_date_obj, get_date_str_from_obj,
 from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friend_actions_generate, kb_travel_friends_generate, kb_travel_places_generate
 from keyboards.common import kb_input, kb_is_valid
 from keyboards.travel import kb_travel_menu, kb_travel_actions_generate
+from keyboards.travel_helper import kb_select_help
 from utils import safe_message_edit
 import validation
 
@@ -317,3 +318,9 @@ async def good_place_handler(message: CallbackQuery, state: FSMContext) -> None:
 @ router.callback_query(EditTravel.changing_places, F.data == CommonCommands.BAD.value)
 async def bad_place_handler(message: CallbackQuery, state: FSMContext) -> None:
     await safe_message_edit(message, Templates.ADD_PLACE.value, reply_markup=kb_input)
+
+
+@ router.callback_query(F.data.startswith(Commands.HELP_TRAVEL.value))
+async def travel_helper_handler(message: CallbackQuery, state: FSMContext) -> None:
+    full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
+    await safe_message_edit(message, Templates.SELECT_HELPER.value, reply_markup=kb_select_help(full_id))

@@ -13,6 +13,7 @@ from routes.markups import router as markup_router
 from routes.profile_edit import router as edit_profile_router
 from routes.travel_add import router as travel_add_router
 from routes.travel_edit import router as travel_edit_router
+from routes.travel_help_route import router as travel_help_route_router
 
 TOKEN = str(getenv("BOT_TOKEN"))
 # TOKEN = '7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw'
@@ -20,7 +21,7 @@ TOKEN = str(getenv("BOT_TOKEN"))
 dp = Dispatcher()
 # dp.message.middleware(ExcHandlerMiddleware())
 dp.include_routers(registration_router, welcome_router,
-                   edit_profile_router, travel_add_router, travel_edit_router, markup_router)
+                   edit_profile_router, travel_add_router, travel_edit_router, markup_router, travel_help_route_router)
 
 
 async def main() -> None:
