@@ -14,7 +14,7 @@ from fsm.travel import EditTravel
 from commands.common import CommonCommands
 from api.getlocation import get_location, get_location_from_raw
 from api.gettime import get_date_obj, get_date_str_from_obj, get_current_datetime
-from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friends_generate, kb_travel_places_generate
+from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friend_actions_generate, kb_travel_friends_generate, kb_travel_places_generate
 from keyboards.common import kb_input, kb_is_valid
 from keyboards.travel import kb_travel_menu, kb_travel_actions_generate
 from utils import safe_message_edit
@@ -136,9 +136,9 @@ async def menu_go_back_handler(message: CallbackQuery, state: FSMContext) -> Non
     shown_id = int(full_id.split(':')[1])  # noqa #type: ignore
 
     travel_data = await TravelRepository.select_by_id(travel_id)
-
-    friends = travel_data['friends']  # noqa #type: ignore
-
+    if message.from_user.id != travel_data['owner']:
+        await safe_message_edit(message, TemplatesGen.travel(travel_data, f'пользователя {travel_data["owner"]}'), reply_markup=kb_travel_friend_actions_generate(full_id))
+        return
     await safe_message_edit(message, TemplatesGen.travel(travel_data, shown_id), reply_markup=kb_travel_actions_generate(full_id))
 
 
