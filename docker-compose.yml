@@ -9,6 +9,8 @@ services:
       - ./db:/app/db
     environment:
       - BOT_TOKEN=7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw
+      - GRAPHHOPPER_TOKEN=41b99b2f-0843-4ccc-947b-89ef6cefade4
+      - GIST_TOKEN=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
 
 
 
