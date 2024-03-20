@@ -15,7 +15,7 @@ from routes.travel_add import router as travel_add_router
 from routes.travel_edit import router as travel_edit_router
 
 TOKEN = str(getenv("BOT_TOKEN"))
-TOKEN = '7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw'
+# TOKEN = '7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw'
 
 dp = Dispatcher()
 # dp.message.middleware(ExcHandlerMiddleware())

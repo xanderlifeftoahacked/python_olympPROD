@@ -3,4 +3,5 @@ aiosqlite
 aiogram
 geopy
 pyowm
+routingpy
 dateparser
