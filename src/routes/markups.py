@@ -121,12 +121,11 @@ async def sent_markup(message: Message, state: FSMContext) -> None:
     path_to_save = validate_path(str(state_data['travel_id']))
     if message.document:
         file_id = message.document.file_id  # noqa #type: ignore
-        filename = message.document.file_name
-        filename = transliterate(filename)  # noqa #type: ignore
+        filename = transliterate(message.document.file_name)  # noqa #type: ignore
         await message.bot.download(file=file_id, destination=f'{path_to_save}/{filename}')  # noqa #type: ignore
     else:
-        filename = f'{str(get_current_datetime()).replace(":", "-")}.jpg'  # noqa #type: ignore
-        await message.bot.download(file=message.photo[-1].file_id, destination=f'{path_to_save}/{filename}')
+        filename = f'{str(get_current_datetime()).replace(":", "-")}.jpg'
+        await message.bot.download(file=message.photo[-1].file_id, destination=f'{path_to_save}/{filename}')  # noqa #type: ignore
 
     travel_data = await TravelRepository.select_by_id(state_data['travel_id'])
 
