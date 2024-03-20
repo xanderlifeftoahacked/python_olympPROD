@@ -13,7 +13,7 @@ from commands.travel import *
 from fsm.travel import EditTravel
 from commands.common import CommonCommands
 from api.getlocation import get_location, get_location_from_raw
-from api.gettime import get_date_obj, get_date_str_from_obj, get_current_date
+from api.gettime import get_date_obj, get_date_str_from_obj, get_current_datetime
 from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friends_generate, kb_travel_places_generate
 from keyboards.common import kb_input, kb_is_valid
 from keyboards.travel import kb_travel_menu, kb_travel_actions_generate
@@ -132,7 +132,6 @@ async def edited_name_handler(message: Message, state: FSMContext) -> None:
 async def menu_go_back_handler(message: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(None)
     full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
-    print(full_id)
     travel_id = int(full_id.split(':')[0])  # noqa #type: ignore
     shown_id = int(full_id.split(':')[1])  # noqa #type: ignore
 
@@ -261,7 +260,7 @@ async def select_date_handler(message: Message, state: FSMContext) -> None:
     if not date_obj:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_DATE.value)
         return
-    if date_obj.date() < get_current_date().date():  # noqa #type: ignore
+    if date_obj.date() < get_current_datetime().date():  # noqa #type: ignore
         await message.answer(text=Templates.OLD_DATE_START.value)
         return
     if cur_state == EditTravel.choosing_date_end:

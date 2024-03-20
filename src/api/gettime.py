@@ -2,7 +2,7 @@ import dateparser as dp
 from datetime import datetime
 
 
-def get_current_date():
+def get_current_datetime():
     return dp.parse(str(datetime.now()))  # noqa #type: ignore
 
 

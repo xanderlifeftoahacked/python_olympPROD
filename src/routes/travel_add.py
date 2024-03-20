@@ -11,7 +11,7 @@ from commands.travel import *
 from fsm.travel import AddTravel
 from commands.common import CommonCommands
 from api.getlocation import get_location, get_location_from_raw
-from api.gettime import get_date_obj, get_date_str_from_obj, get_current_date
+from api.gettime import get_date_obj, get_date_str_from_obj, get_current_datetime
 from keyboards.profile import kb_reg
 from keyboards.common import kb_input, kb_is_valid
 from keyboards.location import kb_get_location
@@ -116,7 +116,7 @@ async def select_date_handler(message: Message, state: FSMContext) -> None:
     if not date_obj:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_DATE.value)
         return
-    if date_obj.date() < get_current_date().date():  # noqa #type: ignore
+    if date_obj.date() < get_current_datetime().date():  # noqa #type: ignore
         await message.answer(text=Templates.OLD_DATE_START.value)
         return
     if cur_state == AddTravel.choosing_date_end:
