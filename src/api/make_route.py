@@ -1,47 +1,73 @@
+import json
+from os import getenv
+import os
+from typing import List, Tuple
 import requests
 from polyline import decode
 import folium
+from api.getlocation import get_coords_from_raw
+from templates.travel_helper import Templates
 
-# Define the GraphHopper API key and the base URL for routing requests
-api_key = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
-base_url = 'https://graphhopper.com/api/1/'
+GRAPHHOPPER_TOKEN = str(getenv('GRAPHHOPPER_TOKEN'))
+GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
+GIST_TOKEN = str(getenv('GIST_TOKEN'))
+GIST_TOKEN = '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'
+graphhopper_url = 'https://graphhopper.com/api/1/'
+gist_url = 'https://api.github.com/gists'
+gist_headers = {
+    'Authorization': f'token {GIST_TOKEN}'
+}
 
-# Specify the starting and ending coordinates for the route
-start_location = '40.730610,-73.935242'  # New York City coordinates
-end_location = '37.773972,-122.431297'   # San Francisco coordinates
 
-# Construct the request URL with the necessary parameters
-url = f"{base_url}route?point={start_location}&point={end_location}&vehicle=car&key={api_key}"
+def generate_gist_data_json(text: str) -> str:
+    return json.dumps({
+        'description': 'Gist for rendering map',
+        'public': True,
+        'files': {
+            'map.html': {
+                'content': text
+            }
+        }
+    })
 
-# Make a GET request to the GraphHopper API to calculate the route
-response = requests.get(url)
 
-# Check if the request was successful and extract the route data
-if response.status_code == 200:
+async def gist_post(data: str) -> requests.Response:
+    return requests.post(url=gist_url, headers=gist_headers,
+                         data=generate_gist_data_json(data))
+
+
+async def try_to_build_route(locations: List[List[str]]) -> Tuple[bool, str]:
+    locations_with_coords = [[get_coords_from_raw(
+        location[0]), location[1], location[2]] for location in locations]
+    sorted_locations = sorted(locations_with_coords,
+                              key=lambda x: x[1])
+    points = '&point='.join([','.join([str(location[0][0]), str(location[0][1])])
+                             for location in sorted_locations])
+    get_route_url = f'{graphhopper_url}route?point={points}&vehicle=car&key={GRAPHHOPPER_TOKEN}'
+    response = requests.get(get_route_url)
+
+    if response.status_code != 200:
+        return False, Templates.ROUTING_ERROR.value
+
     route_data = response.json()
 
     if 'paths' in route_data:
-        # Extract the route geometry (encoded polyline) from the response
         encoded_polyline = route_data['paths'][0]['points']
-        print("Route calculated successfully.")
     else:
-        print("Error: No route found.")
-else:
-    print("Error: Failed to retrieve route data.")
+        return False, Templates.NO_ROUTE.value
 
-# Display or use the encoded polyline to visualize the route on a map
-print("Encoded Polyline:", encoded_polyline)
+    decoded_polyline = decode(encoded_polyline)  # noqa #type: ignore
 
-decoded_polyline = decode(encoded_polyline)
+    map_center = [float(sorted_locations[0][0][0]),
+                  float(sorted_locations[0][0][1])]
+    map_route = folium.Map(location=map_center, zoom_start=5)
 
-# Create a map centered at the starting location
-map_center = [start_location[0], start_location[1]]
-map_route = folium.Map(location=map_center, zoom_start=5)
+    folium.PolyLine(locations=decoded_polyline,
+                    color='blue').add_to(map_route)
 
-# Add the route as a Polyline to the map
-folium.PolyLine(locations=decoded_polyline, color='blue').add_to(map_route)
+    response = await gist_post(map_route.get_root().render())  # noqa #type: ignore
 
-# Save the map as an HTML file
-map_route.save('route_map.html')
+    if response.status_code != 201:
+        return False, Templates.GIST_ERROR.value
 
-print("Route map saved as 'route_map.html'.")
+    return True, response.json()['files']['map.html']['raw_url'].replace('githubusercontent', 'githack')
