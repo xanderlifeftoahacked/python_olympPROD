@@ -198,6 +198,9 @@ async def added_friend_handler(message: Message, state: FSMContext):
     else:
         user_data['travels'] = [state_data['travel_id']]  # noqa #type: ignore
 
+    for member_id in travel_data['friends']:
+        await message.bot.send_message(chat_id=member_id, text=TemplatesGen.new_friend(member_id))  # noqa #type: ignore
+
     await UserRepository.update_by_id(int(friend_id), {'travels': user_data['travels']})  # noqa #type: ignore
     await message.bot.send_message(chat_id=friend_id, text=TemplatesGen.were_added_in_frineds(travel_data['owner']))  # noqa #type: ignore
 

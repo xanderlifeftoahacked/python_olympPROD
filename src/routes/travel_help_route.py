@@ -40,7 +40,6 @@ async def make_route_of_travel_handler(message: CallbackQuery, state: FSMContext
 
     if not is_good:
         await safe_message_edit(message, res, kb_go_back_generate(full_id))
-
     await safe_message_edit(message, TemplatesGen.route_ref(res), kb_go_back_generate(full_id))
 
 
