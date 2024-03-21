@@ -79,7 +79,7 @@ async def place_handler(message: Message, state: FSMContext) -> None:
         return
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
-    (is_good, res, img) = await try_to_build_route([state_data['user_loc'], [loc]], False)
+    (is_good, res, img) = await try_to_build_route([[loc], state_data['user_loc']], False)
 
     if not is_good:
         await message.answer(text=res)
@@ -105,7 +105,7 @@ async def place_handler_str(message: Message, state: FSMContext) -> None:
 
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
-    (is_good, res, img) = await try_to_build_route([state_data['user_loc'], [loc]], False)
+    (is_good, res, img) = await try_to_build_route([[loc], state_data['user_loc']], False)
 
     if not is_good:
         await message.answer(text=res)
@@ -115,8 +115,6 @@ async def place_handler_str(message: Message, state: FSMContext) -> None:
     buffered.seek(0)
 
     await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
-
-    await message.answer(text=TemplatesGen.route_ref(res))
 
     await message.answer(text=TemplatesGen.route_ref(res))
 

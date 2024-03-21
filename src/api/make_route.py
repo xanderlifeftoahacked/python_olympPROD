@@ -40,12 +40,12 @@ async def gist_post(data: str) -> requests.Response:
 
 async def try_to_build_route(locations: List[List[str]], from_raw=True) -> Tuple[bool, str, Any]:
     if from_raw:
-        locations_with_coords = [[get_coords_from_raw(
+        locations_with_coords = [[await get_coords_from_raw(
             location[0]), location[1], location[2]] for location in locations]
         sorted_locations = sorted(locations_with_coords,
                                   key=lambda x: x[1])
     else:
-        locations_with_coords = [[get_coords_from_raw(
+        locations_with_coords = [[await get_coords_from_raw(
             location[0]), None, None] for location in locations]
         sorted_locations = locations_with_coords
 
