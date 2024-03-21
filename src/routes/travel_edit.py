@@ -239,7 +239,7 @@ async def select_place_handler(message: Message, state: FSMContext) -> None:
         return
     lat = message.location.latitude
     lon = message.location.longitude
-    loc = get_location(lat, lon)
+    loc = await get_location(lat, lon)
     if not loc:
         await message.answer(text=Templates.BAD_PLACE.value)
         return
@@ -251,7 +251,7 @@ async def select_place_handler(message: Message, state: FSMContext) -> None:
 @router.message(EditTravel.changing_places, ~F.text.startswith('/'))
 async def select_place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
-    loc = get_location_from_raw(place)  # noqa #type: ignore
+    loc = await get_location_from_raw(place)  # noqa #type: ignore
     if not loc:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_PLACE.value)
         return

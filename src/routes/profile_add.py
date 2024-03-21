@@ -69,7 +69,7 @@ async def city_handler(message: Message, state: FSMContext) -> None:
 
     lat = message.location.latitude
     lon = message.location.longitude
-    (country, city, coords) = get_country_city(lat, lon)
+    (country, city, coords) = await get_country_city(lat, lon)
     if not country or not city:
         await message.answer(text=Templates.ST_BAD_LOC.value)
         return
@@ -82,7 +82,7 @@ async def city_handler(message: Message, state: FSMContext) -> None:
 
 @router.message(RegisterProfile.choosing_city, ~F.text.startswith('/'), F.text != CommonCommands.MAIN_MENU.value)
 async def city_handler_str(message: Message, state: FSMContext) -> None:
-    (country, city, coords) = get_country_city_from_raw(message.text)  # noqa #type: ignore
+    (country, city, coords) = await get_country_city_from_raw(message.text)  # noqa #type: ignore
     if not country or not city:
         await message.answer(text=Templates.ST_BAD_LOC.value)
         return

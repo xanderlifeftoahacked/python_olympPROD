@@ -52,7 +52,7 @@ async def loc_chosen(message: Message, state: FSMContext):
 
     lat = message.location.latitude
     lon = message.location.longitude
-    (country, city, coords) = get_country_city(lat, lon)
+    (country, city, coords) = await get_country_city(lat, lon)
 
     if not country or not city:
         await message.answer(text=Templates.ST_BAD_LOC.value)
@@ -67,7 +67,7 @@ async def loc_chosen(message: Message, state: FSMContext):
 
 @router.message(SettingProfile.choosing_location, ~F.text.startswith('/'), F.text != CommonCommands.MAIN_MENU)
 async def loc_chosen_str(message: Message, state: FSMContext) -> None:
-    (country, city, coords) = get_country_city_from_raw(message.text)  # noqa #type: ignore
+    (country, city, coords) = await get_country_city_from_raw(message.text)  # noqa #type: ignore
 
     if not country or not city:
         await message.answer(text=Templates.ST_BAD_LOC.value)
