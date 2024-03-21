@@ -1,7 +1,9 @@
 from aiogram import Router
-from aiogram import F
+from io import BytesIO
+from aiogram import F, types
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, FSInputFile, Message
+from aiogram.types import BufferedInputFile, CallbackQuery, FSInputFile, Message
+from aiogram.types.input_file import InputFile
 from aiogram.fsm.context import FSMContext
 from api.getlocation import get_location, get_location_from_raw
 
@@ -36,15 +38,20 @@ async def make_route_of_travel_handler(message: CallbackQuery, state: FSMContext
         return
 
     await safe_message_edit(message, Templates.WAIT_PLEASE.value, kb_go_back_generate(full_id))  # noqa #type: ignore
-    (is_good, res) = await try_to_build_route(locations)
+    (is_good, res, img) = await try_to_build_route(locations)
 
     if not is_good:
         await safe_message_edit(message, res, kb_go_back_generate(full_id))
 
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    buffered.seek(0)
+
+    await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
     await safe_message_edit(message, TemplatesGen.route_ref(res), kb_go_back_generate(full_id))
 
 
-@router.callback_query(F.data.startswith(Commands.MAKE_ROUTE_TO_START.value))
+@ router.callback_query(F.data.startswith(Commands.MAKE_ROUTE_TO_START.value))
 async def make_route_to_travel_handler(message: CallbackQuery, state: FSMContext) -> None:
     travel_id = int(message.data.split(':')[1])  # noqa #type: ignore
     full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
@@ -59,43 +66,57 @@ async def make_route_to_travel_handler(message: CallbackQuery, state: FSMContext
     await safe_message_edit(message, Templates.SEND_LOC.value, kb_go_back_generate(full_id))  # noqa #type: ignore
 
 
-@router.message(MakingRoute.choosing_place, F.location)
+@ router.message(MakingRoute.choosing_place, F.location)
 async def place_handler(message: Message, state: FSMContext) -> None:
     if not message.location:
         await message.answer(text=Templates.BAD_LOC.value)
         return
     lat = message.location.latitude
     lon = message.location.longitude
-    loc = get_location(lat, lon)
+    loc = await get_location(lat, lon)
     if not loc:
         await message.answer(text=Templates.BAD_LOC.value)
         return
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
-    (is_good, res) = await try_to_build_route([state_data['user_loc'], [loc]], False)
+    (is_good, res, img) = await try_to_build_route([state_data['user_loc'], [loc]], False)
 
     if not is_good:
         await message.answer(text=res)
+
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    buffered.seek(0)
+
+    await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
 
     await message.answer(text=TemplatesGen.route_ref(res))
 
     await state.set_state(None)
 
 
-@router.message(MakingRoute.choosing_place, ~F.text.startswith('/'))
+@ router.message(MakingRoute.choosing_place, ~F.text.startswith('/'))
 async def place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
-    loc = get_location_from_raw(place)  # noqa #type: ignore
+    loc = await get_location_from_raw(place)  # noqa #type: ignore
     if not loc:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_LOC.value)
         return
 
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
-    (is_good, res) = await try_to_build_route([state_data['user_loc'], [loc]], False)
+    (is_good, res, img) = await try_to_build_route([state_data['user_loc'], [loc]], False)
 
     if not is_good:
         await message.answer(text=res)
+
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    buffered.seek(0)
+
+    await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
+
+    await message.answer(text=TemplatesGen.route_ref(res))
 
     await message.answer(text=TemplatesGen.route_ref(res))
 
