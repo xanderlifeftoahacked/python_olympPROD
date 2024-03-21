@@ -85,9 +85,5 @@ class TemplatesGen:
         return f'Правильно ли указана дата:\n{date} ?'
 
     @classmethod
-    def new_friend(cls, date):
-        return f'В путешествии новый участник: {date} ?'
-
-    @classmethod
     def were_added_in_frineds(cls, id):
         return f'Пользователь <b>{id}</b> добавил вас в друзья! Теперь вам доступны его путешествия!'
