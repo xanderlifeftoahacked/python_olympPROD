@@ -6,3 +6,5 @@ pyowm
 folium
 polyline
 dateparser
+pillow
+selenium
