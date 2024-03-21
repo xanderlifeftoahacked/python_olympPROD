@@ -214,6 +214,10 @@ async def delete_friend_handler(message: CallbackQuery, state: FSMContext):
     friend_id = int(message.data.split(':')[3])  # noqa #type: ignore
 
     friend_data = await UserRepository.select_by_id(friend_id)
+    if travel_id not in friend_data['travels']:
+        await message.bot.send_message(chat_id=message.message.chat.id, text=Templates.ALREADY_DELETED_FRIEND)  # noqa #type: ignore
+        return
+
     friend_data['travels'].remove(travel_id)  # noqa #type: ignore
     await UserRepository.update_by_id(friend_id, {'travels': friend_data['travels']})
 
