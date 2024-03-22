@@ -10,6 +10,7 @@ services:
     environment:
       - BOT_TOKEN=7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw
       - GRAPHHOPPER_TOKEN=41b99b2f-0843-4ccc-947b-89ef6cefade4
+      - GEOAPIFY_TOKEN=c5429f227e67422fa582ad93623882c1
       - RUNNING_DOCKER=1
 
 

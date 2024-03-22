@@ -1,5 +1,6 @@
-from staticmap import CircleMarker, Line, StaticMap
-import asyncio
+from PIL import Image
+from math import ceil
+from polyline.polyline import io
 from os import getenv
 from typing import Any, List, Tuple
 from polyline import decode
@@ -8,10 +9,30 @@ from api.httpxclient import client
 from templates.travel_helper import Templates
 
 GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
+GEOAPIFY_TOKEN = 'c5429f227e67422fa582ad93623882c1'
 graphhopper_url = 'https://graphhopper.com/api/1/'
 
 if getenv('RUNNING_DOCKER'):
     GRAPHHOPPER_TOKEN = str(getenv('GRAPHHOPPER_TOKEN'))
+    GEOAPIFY_TOKEN = str(getenv('GEOAPIFY_TOKEN'))
+marker_params = ';type:awesome;iconsize:large;color:%23144a10;size:large;shadow:no;icontype:awesome;icon:flag|'
+
+
+def generate_geoapify_url(polyline_string: str, markers_string: str) -> str:
+    return (f'https://maps.geoapify.com/v1/staticmap?'
+            f'width=1920&height=1080&'
+            f'apiKey={GEOAPIFY_TOKEN}&'
+            f'geometry=polyline:{polyline_string};linewidth:8;linecolor:%23144a10&'
+            f'{markers_string}')
+
+
+def generate_markers_str(locations: List[Any]) -> str:
+    markers_str = "marker="
+    marker_params = 'type:awesome;iconsize:large;color:%23144a10;size:large;shadow:no;icontype:awesome;icon:flag'
+    for location in locations:
+        marker = f"lonlat:{','.join([str(x) for x in location[2:0:-1]])};{marker_params}|"
+        markers_str += marker
+    return markers_str[:-1]
 
 
 async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple[bool, str, Any]:
@@ -36,21 +57,20 @@ async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple
     else:
         return False, Templates.NO_ROUTE.value, None
 
-    decoded_polyline = decode(encoded_polyline, geojson=True)  # noqa #type: ignore
+    decoded_polyline = decode(encoded_polyline)
+    shorted_polyline = []
+    for i in range(0, len(decoded_polyline), ceil(len(decoded_polyline)/300)):
+        shorted_polyline.append(decoded_polyline[i])
 
-    line = Line(decoded_polyline, 'blue', 8)
+    polyline_string = ','.join(
+        [f"{lat},{lon}" for lon, lat in shorted_polyline])
 
-    try:
-        map = StaticMap(1920, 1080)
-        for location in locations:
-            marker = CircleMarker(location[2:0:-1], 'orange', 30)
-            map.add_marker(marker)
+    url = generate_geoapify_url(
+        polyline_string, generate_markers_str(locations))
+    response = await client.get(url)
 
-        map.add_line(line)
-        img_data = await asyncio.to_thread(map.render)
-        img = img_data
-
-    except Exception:
+    if response.status_code == 200:
+        img = Image.open(io.BytesIO(response.content))
+        return True, Templates.ROUTE_READY.value, img
+    else:
         return False, Templates.OSM_ERROR.value, None
-
-    return True, Templates.ROUTE_READY.value, img
