@@ -13,15 +13,17 @@ from PIL import Image
 from api.getlocation import get_coords_from_raw
 from templates.travel_helper import Templates
 
-GRAPHHOPPER_TOKEN = str(getenv('GRAPHHOPPER_TOKEN'))
 GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
-GIST_TOKEN = str(getenv('GIST_TOKEN'))
 GIST_TOKEN = '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'
 graphhopper_url = 'https://graphhopper.com/api/1/'
 gist_url = 'https://api.github.com/gists'
 gist_headers = {
     'Authorization': f'token {GIST_TOKEN}'
 }
+
+if getenv('RUNNING_DOCKER'):
+    GIST_TOKEN = str(getenv('GIST_TOKEN'))
+    GRAPHHOPPER_TOKEN = str(getenv('GRAPHHOPPER_TOKEN'))
 
 
 def generate_gist_data_json(text: str) -> str:
@@ -78,14 +80,18 @@ async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple
     folium.PolyLine(locations=decoded_polyline,
                     color='orange', weight=8).add_to(map_route)
 
-    options = Options()
-    options.binary_location = '/usr/bin/firefox-esr'
-    options.add_argument('--disable-gpu')
-    options.add_argument('--headless')
-    service = Service(executable_path="/usr/local/bin/geckodriver")
-    driver = webdriver.Firefox(service=service,
-                               options=options)
-    img_data = map_route._to_png(1, driver)
+    if getenv('RUNNING_DOCKER'):
+        options = Options()
+        options.binary_location = '/usr/bin/firefox-esr'
+        options.add_argument('--disable-gpu')
+        options.add_argument('--headless')
+        service = Service(executable_path="/usr/local/bin/geckodriver")
+        driver = webdriver.Firefox(service=service,
+                                   options=options)
+        img_data = map_route._to_png(1, driver)
+    else:
+        img_data = map_route._to_png(1)
+
     img = Image.open(io.BytesIO(img_data))
 
     response = await gist_post(map_route.get_root().render())  # noqa #type: ignore
