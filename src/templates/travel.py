@@ -45,8 +45,9 @@ class TemplatesGen:
         # if 'markups' in travel
         # markups = [markup for markup,
         #            visible in travel_data['markups'] if visible]
+        places = sorted(travel_data['places'], key=lambda x: x[3])
         places = "\n".join([f"    <b>{index + 1}.</b> {place[0]}. <i>\n({get_date_str_from_obj(get_date_obj(place[3]))} - {get_date_str_from_obj(get_date_obj(place[4]))})</i>" for index,
-                           place in enumerate(travel_data['places'])])
+                           place in enumerate(places)])
         return f'''    <u>Путешествие {id} </u>
 
         Название: <b>{travel_data['name']}</b>

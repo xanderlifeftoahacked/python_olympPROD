@@ -49,7 +49,7 @@ async def make_route_of_travel_handler(message: CallbackQuery, state: FSMContext
     buffered.seek(0)
 
     await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
-    await safe_message_edit(message, TemplatesGen.route_ref(res), kb_go_back_generate(full_id))
+    await safe_message_edit(message, res, kb_go_back_generate(full_id))
 
 
 @ router.callback_query(F.data.startswith(Commands.MAKE_ROUTE_TO_START.value))
@@ -57,7 +57,7 @@ async def make_route_to_travel_handler(message: CallbackQuery, state: FSMContext
     travel_id = int(message.data.split(':')[1])  # noqa #type: ignore
     full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
     travel_data = await TravelRepository.select_by_id(travel_id)
-    location = sorted(travel_data['places'], key=lambda x: x[1])[0]
+    location = min(travel_data['places'], key=lambda x: x[3])
     if not location:
         await safe_message_edit(message, Templates.NO_PLACES.value, kb_go_back_generate(full_id))  # noqa #type: ignore
         return
@@ -86,7 +86,7 @@ async def place_handler(message: Message, state: FSMContext) -> None:
 
     await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
 
-    await message.answer(text=TemplatesGen.route_ref(res))
+    await message.answer(text=res)
 
     await state.set_state(None)
 
@@ -114,6 +114,6 @@ async def place_handler_str(message: Message, state: FSMContext) -> None:
 
     await message.bot.send_photo(message.from_user.id, photo=BufferedInputFile(buffered.read(), filename='temp.png'))  # noqa #type: ignore
 
-    await message.answer(text=TemplatesGen.route_ref(res))
+    await message.answer(text=res)
 
     await state.set_state(None)

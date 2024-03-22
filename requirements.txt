@@ -3,8 +3,7 @@ aiosqlite
 aiogram
 geopy
 pyowm
-folium
 polyline
 dateparser
+staticmap
 pillow
-selenium
