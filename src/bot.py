@@ -28,6 +28,7 @@ dp.include_routers(registration_router, welcome_router,
 
 @dp.error(ExceptionTypeFilter(exc.GeocoderServiceError))
 async def catch_geocoder_exc(event: ErrorEvent):
+    print('GEOCODER NOT WORKING')
     await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.SERVICE_GEO.value)  # noqa #type: ignore
 
 #
