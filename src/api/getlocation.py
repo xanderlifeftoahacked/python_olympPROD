@@ -1,6 +1,5 @@
 
 from typing import Any, List, Tuple
-from geopy import exc
 from geopy.geocoders import Nominatim
 from geopy.adapters import AioHTTPAdapter
 
