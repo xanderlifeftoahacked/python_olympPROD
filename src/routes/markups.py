@@ -24,7 +24,6 @@ async def list_markups_handler(message: CallbackQuery, state: FSMContext) -> Non
     travel_id = int(message.data.split(':')[1])  # noqa #type: ignore
     full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
     travel_data = await TravelRepository.select_by_id(travel_id)
-    owner = travel_data['owner']
     if not travel_data['markups']:
         await safe_message_edit(message, Templates.NO_MARKUPS.value, kb_go_back_generate(full_id))  # noqa #type: ignore
         return
