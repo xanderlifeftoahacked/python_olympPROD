@@ -50,19 +50,13 @@ async def gist_post(data: str) -> requests.Response:
                                    data=generate_gist_data_json(data))
 
 
-async def try_to_build_route(locations: List[List[str]], from_raw=True) -> Tuple[bool, str, Any]:
+async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple[bool, str, Any]:
     if from_raw:
-        locations_with_coords = [[await get_coords_from_raw(
-            location[0]), location[1], location[2]] for location in locations]
-        sorted_locations = sorted(locations_with_coords,
-                                  key=lambda x: x[1])
-    else:
-        locations_with_coords = [[await get_coords_from_raw(
-            location[0]), None, None] for location in locations]
-        sorted_locations = locations_with_coords
+        locations = sorted(locations,
+                           key=lambda x: x[3])
 
-    points = '&point='.join([','.join([str(location[0][0]), str(location[0][1])])
-                             for location in sorted_locations])
+    points = '&point='.join([','.join([str(location[1]), str(location[2])])
+                             for location in locations])
     get_route_url = f'{graphhopper_url}route?point={points}&vehicle=car&key={GRAPHHOPPER_TOKEN}'
     response = await asyncio.to_thread(requests.get, get_route_url)
     if response.status_code == 400:
@@ -80,8 +74,8 @@ async def try_to_build_route(locations: List[List[str]], from_raw=True) -> Tuple
 
     decoded_polyline = decode(encoded_polyline)  # noqa #type: ignore
 
-    map_center = [float(sorted_locations[0][0][0]),
-                  float(sorted_locations[0][0][1])]
+    map_center = [float(locations[0][1]),
+                  float(locations[0][2])]
     map_route = folium.Map(location=map_center, zoom_start=5)
     lats = [point[0] for point in decoded_polyline]
     lons = [point[1] for point in decoded_polyline]
@@ -93,7 +87,7 @@ async def try_to_build_route(locations: List[List[str]], from_raw=True) -> Tuple
     folium.PolyLine(locations=decoded_polyline,
                     color='orange', weight=8).add_to(map_route)
 
-    img_data = map_route._to_png(1, driver=driver)
+    img_data = map_route._to_png(1, driver)
     img = Image.open(io.BytesIO(img_data))
 
     response = await gist_post(map_route.get_root().render())  # noqa #type: ignore

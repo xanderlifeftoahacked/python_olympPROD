@@ -20,7 +20,7 @@ async def get_location_from_raw(loc: str) -> Any:
 
     if not location:
         return None
-    return location.address
+    return location.address, location.latitude, location.longitude
 
 
 async def get_location(lat: float, lon: float) -> Any:

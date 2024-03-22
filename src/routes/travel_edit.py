@@ -244,18 +244,18 @@ async def select_place_handler(message: Message, state: FSMContext) -> None:
         await message.answer(text=Templates.BAD_PLACE.value)
         return
 
-    await state.update_data(cur_loc=[str(loc)])
+    await state.update_data(cur_loc=[str(loc)], cur_coords=[lat, lon])
     await message.answer(text=TemplatesGen.is_location_good(loc), reply_markup=kb_is_valid)
 
 
 @router.message(EditTravel.changing_places, ~F.text.startswith('/'))
 async def select_place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
-    loc = await get_location_from_raw(place)  # noqa #type: ignore
+    loc, lat, lon = await get_location_from_raw(place)  # noqa #type: ignore
     if not loc:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_PLACE.value)
         return
-    await state.update_data(cur_loc=[str(loc)])
+    await state.update_data(cur_loc=[str(loc)], cur_coords=[lat, lon])
     await message.answer(text=TemplatesGen.is_location_good(loc), reply_markup=kb_is_valid)
 
 
@@ -273,7 +273,7 @@ async def select_date_handler(message: Message, state: FSMContext) -> None:
         return
     if cur_state == EditTravel.choosing_date_end:
         state_data = await state.get_data()
-        date_start = state_data['cur_loc'][1]
+        date_start = state_data['cur_loc'][-1]
         if date_obj < get_date_obj(date_start):  # noqa #type: ignore
             await message.answer(text=Templates.OLD_DATE_END.value)
             return
@@ -293,6 +293,8 @@ async def good_date_handler(message: CallbackQuery, state: FSMContext) -> None:
     cur_loc = state_data['cur_loc']
 
     if await state.get_state() == EditTravel.choosing_date_start:
+        cur_loc.append(state_data['cur_coords'][0])
+        cur_loc.append(state_data['cur_coords'][1])
         cur_loc.append(state_data['start_time'])
         await state.update_data(cur_loc=cur_loc)
         await safe_message_edit(message, Templates.ADD_DATE_END.value)

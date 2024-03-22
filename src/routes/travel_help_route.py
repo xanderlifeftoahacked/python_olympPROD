@@ -42,6 +42,7 @@ async def make_route_of_travel_handler(message: CallbackQuery, state: FSMContext
 
     if not is_good:
         await safe_message_edit(message, res, kb_go_back_generate(full_id))
+        return
 
     buffered = BytesIO()
     img.save(buffered, format="PNG")
@@ -73,14 +74,9 @@ async def place_handler(message: Message, state: FSMContext) -> None:
         return
     lat = message.location.latitude
     lon = message.location.longitude
-    loc = await get_location(lat, lon)
-    if not loc:
-        await message.answer(text=Templates.BAD_LOC.value)
-        return
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
-    (is_good, res, img) = await try_to_build_route([[loc], state_data['user_loc']], False)
-    print("HAHAHAHHA")
+    (is_good, res, img) = await try_to_build_route([['Userlocation', lat, lon], state_data['user_loc']], False)
     if not is_good:
         await message.answer(text=res)
 
@@ -98,7 +94,7 @@ async def place_handler(message: Message, state: FSMContext) -> None:
 @ router.message(MakingRoute.choosing_place, ~F.text.startswith('/'))
 async def place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
-    loc = await get_location_from_raw(place)  # noqa #type: ignore
+    loc, lat, lon = await get_location_from_raw(place)  # noqa #type: ignore
     if not loc:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_LOC.value)
         return
@@ -106,7 +102,7 @@ async def place_handler_str(message: Message, state: FSMContext) -> None:
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
 
-    (is_good, res, img) = await try_to_build_route([[loc], state_data['user_loc']], False)
+    (is_good, res, img) = await try_to_build_route([[loc, lat, lon], state_data['user_loc']], False)
 
     if not is_good:
         await message.answer(text=res)
