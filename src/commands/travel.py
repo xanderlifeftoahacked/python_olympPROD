@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Commands(Enum):
-    ADD_TRAVEL = 'Добавление путешествий'
-    LIST_TRAVELS = 'Просмотр путешествий'
+    ADD_TRAVEL = 'Добавить путешествие'
+    LIST_TRAVELS = 'Просмотреть путешествия'
 
     EDIT_TRAVEL = 'Настройки путешествия'
     MARKUPS_MENU = 'Заметки'

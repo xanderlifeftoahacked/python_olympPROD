@@ -4,10 +4,10 @@ from enum import Enum
 class Commands(Enum):
     EDIT_PROFILE = 'Редактировать профиль'
     REGISTER = 'Регистрация'
-    AGE = 'Возраст'
-    BIO = 'Статус'
+    AGE = 'Изменить возраст'
+    BIO = 'Изменить статус'
     PROFILE_DATA = 'Посмотреть профиль'
-    LOCATION = 'Страна и город'
+    LOCATION = 'Изменить страну и город'
 
 
 # class Answers
