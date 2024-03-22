@@ -8,10 +8,10 @@ geolocator = Nominatim(user_agent='xander_travelbot',
                        adapter_factory=AioHTTPAdapter)
 
 
-async def get_coords_from_raw(loc: str) -> List[float]:
+async def get_coords_from_raw(loc: str) -> List[Any]:
     location = await geolocator.geocode(loc, language='ru')  # noqa #type: ignore
     if not location:
-        raise exc.GeocoderServiceError('Very sad')
+        return [None, None, None]
     return [location.latitude, location.longitude]  # noqa #type:ignore
 
 

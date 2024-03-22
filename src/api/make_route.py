@@ -24,15 +24,6 @@ gist_headers = {
 }
 
 
-options = Options()
-options.binary_location = '/usr/bin/firefox-esr'
-options.add_argument('--disable-gpu')
-options.add_argument('--headless')
-service = Service(executable_path="/usr/local/bin/geckodriver")
-driver = webdriver.Firefox(service=service,
-                           options=options)
-
-
 def generate_gist_data_json(text: str) -> str:
     return json.dumps({
         'description': 'Gist for rendering map',
@@ -87,6 +78,13 @@ async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple
     folium.PolyLine(locations=decoded_polyline,
                     color='orange', weight=8).add_to(map_route)
 
+    options = Options()
+    options.binary_location = '/usr/bin/firefox-esr'
+    options.add_argument('--disable-gpu')
+    options.add_argument('--headless')
+    service = Service(executable_path="/usr/local/bin/geckodriver")
+    driver = webdriver.Firefox(service=service,
+                               options=options)
     img_data = map_route._to_png(1, driver)
     img = Image.open(io.BytesIO(img_data))
 
