@@ -28,19 +28,14 @@ async def list_markups_handler(message: CallbackQuery, state: FSMContext) -> Non
     if not travel_data['markups']:
         await safe_message_edit(message, Templates.NO_MARKUPS.value, kb_go_back_generate(full_id))  # noqa #type: ignore
         return
-    if owner == user_id:
-        await state.set_state(Markup.selecting)
-        await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(travel_data['markups'], full_id))
-        return
 
-    else:
-        visible_markups = [
-            markup for markup in travel_data['markups'] if markup[2] == user_id or markup[1]]
-        if not len(visible_markups):
-            await safe_message_edit(message, Templates.NO_VISIBLE_MARKUPS.value, kb_go_back_generate(full_id))  # noqa #type: ignore
-            return
-        await state.set_state(Markup.selecting)
-        await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(visible_markups, full_id))
+    visible_markups = [
+        markup for markup in travel_data['markups'] if markup[2] == user_id or markup[1]]
+    if not len(visible_markups):
+        await safe_message_edit(message, Templates.NO_VISIBLE_MARKUPS.value, kb_go_back_generate(full_id))  # noqa #type: ignore
+        return
+    await state.set_state(Markup.selecting)
+    await safe_message_edit(message, Templates.SELECT_MARKUP.value, kb_show_markups_generate(visible_markups, full_id))
 
 
 @router.callback_query(Markup.selecting)
