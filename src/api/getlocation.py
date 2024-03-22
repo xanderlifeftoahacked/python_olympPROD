@@ -18,7 +18,7 @@ async def get_location_from_raw(loc: str) -> Any:
     location = await geolocator.geocode(loc, language='ru')  # noqa #type:ignore
 
     if not location:
-        return None
+        return [None, None, None]
     return location.address, location.latitude, location.longitude
 
 
