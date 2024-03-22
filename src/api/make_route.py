@@ -1,3 +1,6 @@
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 import asyncio
 import json
 import io
@@ -19,6 +22,15 @@ gist_url = 'https://api.github.com/gists'
 gist_headers = {
     'Authorization': f'token {GIST_TOKEN}'
 }
+
+
+options = Options()
+options.binary_location = '/usr/bin/firefox-esr'
+options.add_argument('--disable-gpu')
+options.add_argument('--headless')
+service = Service(executable_path="/usr/local/bin/geckodriver")
+driver = webdriver.Firefox(service=service,
+                           options=options)
 
 
 def generate_gist_data_json(text: str) -> str:
@@ -79,9 +91,9 @@ async def try_to_build_route(locations: List[List[str]], from_raw=True) -> Tuple
     map_route.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
     folium.PolyLine(locations=decoded_polyline,
-                    color='blue').add_to(map_route)
+                    color='orange', weight=8).add_to(map_route)
 
-    img_data = map_route._to_png(1)
+    img_data = map_route._to_png(1, driver=driver)
     img = Image.open(io.BytesIO(img_data))
 
     response = await gist_post(map_route.get_root().render())  # noqa #type: ignore

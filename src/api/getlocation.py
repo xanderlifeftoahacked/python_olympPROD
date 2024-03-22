@@ -1,8 +1,8 @@
 
 from typing import Any, List, Tuple
+from geopy import exc
 from geopy.geocoders import Nominatim
 from geopy.adapters import AioHTTPAdapter
-import aiohttp
 
 geolocator = Nominatim(user_agent='xander_travelbot',
                        adapter_factory=AioHTTPAdapter)
@@ -10,6 +10,8 @@ geolocator = Nominatim(user_agent='xander_travelbot',
 
 async def get_coords_from_raw(loc: str) -> List[float]:
     location = await geolocator.geocode(loc, language='ru')  # noqa #type: ignore
+    if not location:
+        raise exc.GeocoderServiceError('Very sad')
     return [location.latitude, location.longitude]  # noqa #type:ignore
 
 

@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, CallbackQuery, FSInputFile, Message
 from aiogram.types.input_file import InputFile
 from aiogram.fsm.context import FSMContext
-from api.getlocation import get_location, get_location_from_raw
+from api.getlocation import get_coords_from_raw, get_location, get_location_from_raw
 
 from api.make_route import try_to_build_route
 from fsm.travel_help_route import MakingRoute
@@ -80,7 +80,7 @@ async def place_handler(message: Message, state: FSMContext) -> None:
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
     (is_good, res, img) = await try_to_build_route([[loc], state_data['user_loc']], False)
-
+    print("HAHAHAHHA")
     if not is_good:
         await message.answer(text=res)
 
@@ -105,6 +105,7 @@ async def place_handler_str(message: Message, state: FSMContext) -> None:
 
     await message.answer(text=Templates.WAIT_PLEASE.value)  # noqa #type: ignore
     state_data = await state.get_data()
+
     (is_good, res, img) = await try_to_build_route([[loc], state_data['user_loc']], False)
 
     if not is_good:
