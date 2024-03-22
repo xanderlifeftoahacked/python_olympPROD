@@ -106,6 +106,7 @@ async def place_handler_str(message: Message, state: FSMContext) -> None:
 
     if not is_good:
         await message.answer(text=res)
+        return
 
     buffered = BytesIO()
     img.save(buffered, format="PNG")
