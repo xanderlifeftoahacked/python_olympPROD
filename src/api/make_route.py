@@ -2,8 +2,9 @@ from staticmap import CircleMarker, Line, StaticMap
 import asyncio
 from os import getenv
 from typing import Any, List, Tuple
-import requests
 from polyline import decode
+from api.httpxclient import client
+
 from templates.travel_helper import Templates
 
 GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
@@ -21,7 +22,7 @@ async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple
     points = '&point='.join([','.join([str(location[1]), str(location[2])])
                              for location in locations])
     get_route_url = f'{graphhopper_url}route?point={points}&vehicle=car&key={GRAPHHOPPER_TOKEN}'
-    response = await asyncio.to_thread(requests.get, get_route_url)
+    response = await client.get(get_route_url)
     if response.status_code == 400:
         return False, Templates.NO_ROUTE.value, None
 
