@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import JSON, Column, Float, Integer, String, Boolean
+import restrictions
 
 engine = create_async_engine('sqlite+aiosqlite:///db/database.db')
 new_session = async_sessionmaker(engine, expire_on_commit=False)
@@ -14,9 +15,9 @@ class UserTable(Model):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    age = Column(Integer, nullable=True)
-    city = Column(JSON, nullable=True)
-    bio = Column(String, nullable=True)
+    age = Column(Integer)
+    city = Column(JSON)
+    bio = Column(String(restrictions.MAX_BIO_LEN))
     travels = Column(JSON, nullable=True)
 
 
@@ -25,8 +26,8 @@ class TravelTable(Model):
 
     id = Column(Integer, primary_key=True)
     owner = Column(Integer)
-    name = Column(String)
-    description = Column(String, nullable=True)
+    name = Column(String(restrictions.MAX_TRAVEL_LEN))
+    description = Column(String(restrictions.MAX_TRAVEL_DESC), nullable=True)
     places = Column(JSON, nullable=True)
     friends = Column(JSON, nullable=True)
     markups = Column(JSON, nullable=True)
