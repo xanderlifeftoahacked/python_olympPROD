@@ -4,8 +4,8 @@ from polyline.polyline import io
 from os import getenv
 from typing import Any, List, Tuple
 from polyline import decode
-from api.httpxclient import client
 
+from api.httpxclient import client
 from templates.travel_helper import Templates
 
 GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
