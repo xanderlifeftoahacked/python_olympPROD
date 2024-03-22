@@ -20,7 +20,6 @@ from templates.errors import Errors
 
 from templates.errors import *
 TOKEN = str(getenv("BOT_TOKEN"))
-# TOKEN = '7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw'
 
 dp = Dispatcher()
 dp.include_routers(registration_router, welcome_router,
@@ -31,10 +30,11 @@ dp.include_routers(registration_router, welcome_router,
 async def catch_geocoder_exc(event: ErrorEvent):
     await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.SERVICE_GEO.value)  # noqa #type: ignore
 
-
-@dp.error()
-async def catch_all_exc(event: ErrorEvent):
-    await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.WENT_WRONG.value)  # noqa #type: ignore
+#
+# @dp.error()
+# async def catch_all_exc(event: ErrorEvent):
+#     await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.WENT_WRONG.value)  # noqa #type: ignore
+#
 
 
 async def main() -> None:

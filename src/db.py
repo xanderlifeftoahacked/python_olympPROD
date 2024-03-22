@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import JSON, Column, Integer, String, Boolean
+from sqlalchemy import JSON, Column, Float, Integer, String, Boolean
 
 engine = create_async_engine('sqlite+aiosqlite:///db/database.db')
 new_session = async_sessionmaker(engine, expire_on_commit=False)
@@ -29,7 +29,6 @@ class TravelTable(Model):
     description = Column(String, nullable=True)
     places = Column(JSON, nullable=True)
     friends = Column(JSON, nullable=True)
-    # is_data_private = Column(Boolean, nullable=True, default=False)
     markups = Column(JSON, nullable=True)
 
 

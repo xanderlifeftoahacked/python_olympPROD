@@ -1,3 +1,4 @@
+from typing import Tuple
 from sqlalchemy import Column, select
 
 import db
