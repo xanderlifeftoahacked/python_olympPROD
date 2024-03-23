@@ -42,23 +42,24 @@ class Templates(Enum):
 class TemplatesGen:
     @classmethod
     def travel(cls, travel_data, id):
-        # if 'markups' in travel
-        # markups = [markup for markup,
-        #            visible in travel_data['markups'] if visible]
         places = sorted(travel_data['places'], key=lambda x: x[3])
         places = "\n".join([f"    <b>{index + 1}.</b> {place[0]}. <i>\n({get_date_str_from_obj(get_date_obj(place[3]))} - {get_date_str_from_obj(get_date_obj(place[4]))})</i>" for index,
                            place in enumerate(places)])
+
+        if travel_data['friends']:
+            friends_str = f"Друзья: <b>{', '.join([str(x) for x in travel_data['friends']])}</b>"
+        else:
+            friends_str = ''
+
         return f'''    <u>Путешествие {id} </u>
 
         Название: <b>{travel_data['name']}</b>
         Описание: <b>{travel_data['description']}</b>
+        {friends_str}
         Места: 
     {places}
 
         '''
-
-        # Совместно с: <b>{travel_data['friends']}</b>
-        # Заметки: <b>{enumerate(markups)}</b>
 
     @classmethod
     def is_location_good(cls, loc):
@@ -92,4 +93,4 @@ class TemplatesGen:
 
     @classmethod
     def were_added_in_frineds(cls, id):
-        return f'Пользователь <b>{id}</b> добавил вас в друзья! Теперь вам доступны его путешествия!'
+        return f'Пользователь <b>{id}</b> добавил вас в друзья! Проверьте список своих путешествий!'

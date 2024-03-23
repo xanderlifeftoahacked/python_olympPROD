@@ -190,6 +190,10 @@ async def added_friend_handler(message: Message, state: FSMContext):
     if friend_id in travel_data['friends']:  # noqa #type: ignore
         await message.answer(text=Templates.ST_ALREADY_FRIEND.value, reply_markup=kb_input)
         return
+
+    for member_id in travel_data['friends']:
+        await message.bot.send_message(chat_id=member_id, text=TemplatesGen.new_friend(member_id))  # noqa #type: ignore
+
     travel_data['friends'].append(friend_id)  # noqa #type: ignore
     await TravelRepository.update_by_id(state_data['travel_id'], {'friends': travel_data['friends']})  # noqa #type: ignore
     user_data = await UserRepository.select_by_id(int(friend_id))
@@ -197,9 +201,6 @@ async def added_friend_handler(message: Message, state: FSMContext):
         user_data['travels'].append(state_data['travel_id'])  # noqa #type: ignore
     else:
         user_data['travels'] = [state_data['travel_id']]  # noqa #type: ignore
-
-    for member_id in travel_data['friends']:
-        await message.bot.send_message(chat_id=member_id, text=TemplatesGen.new_friend(member_id))  # noqa #type: ignore
 
     await UserRepository.update_by_id(int(friend_id), {'travels': user_data['travels']})  # noqa #type: ignore
     await message.bot.send_message(chat_id=friend_id, text=TemplatesGen.were_added_in_frineds(travel_data['owner']))  # noqa #type: ignore
