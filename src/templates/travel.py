@@ -66,7 +66,7 @@ class TemplatesGen:
         return f'Правильно ли указано место:\n{loc} ?'
 
     @classmethod
-    def delete_place(cls, travel_data):
+    def show_places(cls, travel_data):
         return "\n".join([f"    <b>{index + 1}.</b> {place[0]}. <i>\n({place[3]} - {place[4]})</i>" for index,
                           place in enumerate(travel_data['places'])])
 

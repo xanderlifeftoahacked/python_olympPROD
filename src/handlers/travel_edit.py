@@ -61,7 +61,7 @@ async def delete_place_handler(message: CallbackQuery, state: FSMContext) -> Non
     travel_data = await TravelRepository.select_by_id(travel_id)
     if len(travel_data['places']):
         await state.set_state(EditTravel.changing_places)
-        await safe_message_edit(message, TemplatesGen.delete_place(travel_data), reply_markup=kb_travel_places_generate(len(travel_data['places']), full_id))
+        await safe_message_edit(message, TemplatesGen.show_places(travel_data), reply_markup=kb_travel_places_generate(len(travel_data['places']), full_id))
 
 
 @ router.callback_query(State(None), F.data.startswith(Commands.ADD_PLACE.value))
