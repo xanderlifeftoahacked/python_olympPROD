@@ -6,5 +6,4 @@ geopy
 open-meteo
 polyline
 dateparser
-staticmap
 pillow
