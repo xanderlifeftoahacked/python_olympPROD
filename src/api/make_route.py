@@ -19,12 +19,25 @@ if getenv('RUNNING_DOCKER'):
 marker_params = ';type:awesome;iconsize:large;color:%23144a10;size:large;shadow:no;icontype:awesome;icon:flag|'
 
 
-def generate_geoapify_url(polyline_string: str, markers_string: str) -> str:
+def generate_geoapify_url(decoded_polyline: List[Tuple[float, float]], markers_string: str) -> str:
+    shorted_polyline = []
+    for i in range(0, len(decoded_polyline), ceil(len(decoded_polyline)/300)):
+        shorted_polyline.append(decoded_polyline[i])
+    polyline_string = ','.join(
+        [f"{lat},{lon}" for lon, lat in shorted_polyline])
+
     return (f'https://maps.geoapify.com/v1/staticmap?'
             f'width=1920&height=1080&'
             f'apiKey={GEOAPIFY_TOKEN}&'
             f'geometry=polyline:{polyline_string};linewidth:8;linecolor:%23144a10&'
             f'{markers_string}')
+
+
+def generate_graphhopper_url(locations: List[List[Any]]) -> str:
+    points = '&point='.join([','.join([str(location[1]), str(location[2])])
+                             for location in locations])
+
+    return f'{graphhopper_url}route?point={points}&vehicle=car&key={GRAPHHOPPER_TOKEN}'
 
 
 def generate_markers_str(locations: List[Any]) -> str:
@@ -41,10 +54,8 @@ async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple
         locations = sorted(locations,
                            key=lambda x: x[3])
 
-    points = '&point='.join([','.join([str(location[1]), str(location[2])])
-                             for location in locations])
-    get_route_url = f'{graphhopper_url}route?point={points}&vehicle=car&key={GRAPHHOPPER_TOKEN}'
-    response = await client.get(get_route_url)
+    response = await client.get(generate_graphhopper_url(locations))
+
     if response.status_code == 400:
         return False, Templates.NO_ROUTE.value, None
 
@@ -59,15 +70,10 @@ async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple
         return False, Templates.NO_ROUTE.value, None
 
     decoded_polyline = decode(encoded_polyline)
-    shorted_polyline = []
-    for i in range(0, len(decoded_polyline), ceil(len(decoded_polyline)/300)):
-        shorted_polyline.append(decoded_polyline[i])
-
-    polyline_string = ','.join(
-        [f"{lat},{lon}" for lon, lat in shorted_polyline])
 
     url = generate_geoapify_url(
-        polyline_string, generate_markers_str(locations))
+        decoded_polyline, generate_markers_str(locations))
+
     response = await client.get(url)
 
     if response.status_code == 200:
