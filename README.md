@@ -1,4 +1,4 @@
-# TravelBot by xander (@travel_xanderbot)
+# TravelBot by xander ([@travel_xanderbot](https://t.me/travel_xanderbot))
 
 <a target="_blank" href="https://github.com/docker"><img src="https://img.shields.io/badge/Docker-blue"/></a> </a> 
 <a target="_blank" href="https://github.com/aiogram"><img src="https://img.shields.io/badge/Aiogram-blue"/></a> </a> 
@@ -60,17 +60,23 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
 В качестве СУБД была выбрана SQLite (для работы с ней используется асинхронный драйвер). Другим вариантом мог быть PostgreSQL, предлагающий больший функционал, однако функционала SQLite мне более чем достаточно. К тому же, SQLite выигрывает у Postgres в скорости.
 От кэширования (например, с помощью Redis) я отказался по причине того, что выигрыш в скорости получения и записи данных был бы нивелирован временем ожидания ответов от API (даже самого Telegram).   
 ### Библиотеки
-  * Aiogram - один из популярных фреймворков для работы с Telegram Bot Api. Был выбран исходя из рекомендаций сообщества.
-  * SQLAlchemy - ORM для более удобной и безопасной работы с базой данных.
-  * Aiosqlite - асинхронный драйвер для базы данных.
-  * Pyowm - получение информации о погоде 
-  * Geopy - геокодинг (поиск локаций)
-  * Httpx - асинхронные url-запросы
-  * Polyline - используется для декодирования маршрутов, полученных от API
-  * Dateparser - используется для распознования дат.
-  * Pillow - используется для работы с изображениями
+  * **Aiogram** - один из популярных фреймворков для работы с Telegram Bot Api. Был выбран исходя из рекомендаций сообщества.
+  * **SQLAlchemy** - ORM для более удобной и безопасной работы с базой данных.
+  * **Aiosqlite** - асинхронный драйвер для базы данных.
+  * **Open-meteo** - получение информации о погоде 
+  * **Geopy** - геокодинг (поиск локаций)
+  * **Httpx** - асинхронные url-запросы
+  * **Polyline** - используется для декодирования маршрутов, полученных от API
+  * **Dateparser** - используется для распознования дат.
+  * **Pillow** - используется для работы с изображениями
 ### Сторонние API
-
+#### OSM-based (используют OSM):
+  * **Nominatim** ([repo](https://github.com/osm-search/Nominatim)) - используется для геокодинга (через geopy)
+  * **Graphhopper** ([repo](https://github.com/graphhopper/graphhopper)) - используется для построения маршрутов
+  * **Geoapify (static map api)** ([osm wiki](https://wiki.openstreetmap.org/wiki/Geoapify)) - используется для получения изображений с маршрутом
+  * **OpenTripMap** ([rapidapi](https://rapidapi.com/opentripmap/api/places1/details)) - используется для поиска достопримечательностей и кафе
+#### Остальные:
+  * **Open-meteo** ([repo](https://github.com/open-meteo/open-meteo)) - используется для получения данных о погоде (через одноименную библиотеку)
 
 ## Структура базы данных
 
