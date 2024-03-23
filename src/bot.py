@@ -10,13 +10,13 @@ from geopy import exc
 
 import db
 from templates.errors import *
-from routes.profile_add import router as registration_router
-from routes.welcome import router as welcome_router
-from routes.markups import router as markup_router
-from routes.profile_edit import router as edit_profile_router
-from routes.travel_add import router as travel_add_router
-from routes.travel_edit import router as travel_edit_router
-from routes.travel_help_route import router as travel_help_route_router
+from handlers.profile_add import router as registration_router
+from handlers.welcome import router as welcome_router
+from handlers.markups import router as markup_router
+from handlers.profile_edit import router as edit_profile_router
+from handlers.travel_add import router as travel_add_router
+from handlers.travel_edit import router as travel_edit_router
+from handlers.travel_help_route import router as travel_help_route_router
 
 TOKEN = str(getenv("BOT_TOKEN"))
 
@@ -45,5 +45,5 @@ async def main() -> None:
     # await db.delete_tables()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    logging.basicConfig(level=logging.CRITICAL, stream=sys.stdout)
     asyncio.run(main())

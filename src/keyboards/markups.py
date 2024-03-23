@@ -6,12 +6,15 @@ from commands.common import CommonCommands
 
 
 def kb_select_type(id):
-    return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button_with_id(MarkupCommands.PRIVATE.value, id),
-                                                        inline_button_with_id(MarkupCommands.PUBLIC.value, id)], [inline_button_with_id(CommonCommands.GO_BACK.value, id)]])
+    return types.InlineKeyboardMarkup(
+        inline_keyboard=[[inline_button_with_id(MarkupCommands.PRIVATE.value, id),
+                          inline_button_with_id(MarkupCommands.PUBLIC.value, id)],
+                         [inline_button_with_id(CommonCommands.GO_BACK.value, id)]])
 
 
 def kb_go_back_generate(id):
-    return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button_with_id(CommonCommands.GO_BACK.value, id)]])
+    return types.InlineKeyboardMarkup(
+        inline_keyboard=[[inline_button_with_id(CommonCommands.GO_BACK.value, id)]])
 
 
 def kb_show_markups_generate(markups, id):

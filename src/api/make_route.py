@@ -15,6 +15,7 @@ graphhopper_url = 'https://graphhopper.com/api/1/'
 if getenv('RUNNING_DOCKER'):
     GRAPHHOPPER_TOKEN = str(getenv('GRAPHHOPPER_TOKEN'))
     GEOAPIFY_TOKEN = str(getenv('GEOAPIFY_TOKEN'))
+
 marker_params = ';type:awesome;iconsize:large;color:%23144a10;size:large;shadow:no;icontype:awesome;icon:flag|'
 
 

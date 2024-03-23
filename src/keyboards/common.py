@@ -12,5 +12,8 @@ kb_input = types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(
 kb_is_valid = types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(
     CommonCommands.GOOD.value), inline_button(CommonCommands.BAD.value)]])
 
-kb_main = types.ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[button(CommonCommands.INFO.value)],
-                                                                    [button(CommonCommands.MY_PROFILE.value)],  [button(CommonCommands.MENU_TRAVELS.value)]])
+kb_main = types.ReplyKeyboardMarkup(resize_keyboard=True,
+                                    keyboard=[[button(CommonCommands.INFO.value)],
+                                              [button(
+                                                  CommonCommands.MY_PROFILE.value)],
+                                              [button(CommonCommands.MENU_TRAVELS.value)]])
