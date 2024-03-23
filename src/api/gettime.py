@@ -14,7 +14,7 @@ def get_date_obj(date_str: str) -> Any:
     return None
 
 
-def get_date_str_from_obj(date) -> Any:
+def get_date_str_from_obj(date: datetime) -> Any:
     if not date:
         return None
 
@@ -41,5 +41,5 @@ def get_date_str_from_obj(date) -> Any:
     return formatted_date
 
 
-def get_date_formatted(date) -> Any:
+def get_date_formatted(date: datetime) -> Any:
     return f'{date.year}-{date.month}-{date.day}'
