@@ -1,4 +1,3 @@
-
 from typing import Any, List, Tuple
 from geopy.geocoders import Nominatim
 from geopy.adapters import AioHTTPAdapter
