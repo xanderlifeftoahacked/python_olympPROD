@@ -25,5 +25,5 @@ class TemplatesGen:
     def weather(cls, sunrise: datetime, sunset: datetime, temp_min: float,
                 temp_max: float, weather_condition: str, date: datetime) -> str:
         return f'''<u><i>{get_date_str_from_obj(date)}</i></u>:
-  🌅 {sunrise.time()} - {sunset.time()}
+  🌅 {sunrise.time().hour}:{sunrise.time().minute} - {sunset.time().hour}:{sunset.time().minute}
   🌡️ {weather_condition},  от {temp_min}℃  до {temp_max}℃ '''
