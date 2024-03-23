@@ -17,7 +17,7 @@ class Templates(Enum):
     BAD_LOC = 'Не можем найти вас! Попробуйте еще.'
 
     NO_WEATHER = 'Не можем узнать погоду!'
-    DONT_KNOW = 'Прогноза погоды на эти даты еще нет!'
+    DONT_KNOW = 'Такого прогноза еще нет!'
 
 
 class TemplatesGen:
