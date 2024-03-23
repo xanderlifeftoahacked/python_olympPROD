@@ -1,15 +1,19 @@
 import asyncio
 import logging
 import sys
+import httpx
+
+from templates.errors import *
+import db
+
 from os import getenv
 from aiogram import F, Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
-from geopy import exc
+from geopy.exc import GeocoderServiceError
+from lib.openmeteo.exceptions import OpenMeteoError
 
-import db
-from templates.errors import *
 from handlers.profile_add import router as registration_router
 from handlers.welcome import router as welcome_router
 from handlers.markups import router as markup_router
@@ -17,20 +21,38 @@ from handlers.profile_edit import router as edit_profile_router
 from handlers.travel_add import router as travel_add_router
 from handlers.travel_edit import router as travel_edit_router
 from handlers.travel_help_route import router as travel_help_route_router
+from handlers.travel_help_weather import router as travel_help_weather_router
 
 TOKEN = str(getenv("BOT_TOKEN"))
 
 dp = Dispatcher()
 dp.include_routers(registration_router, welcome_router,
-                   edit_profile_router, travel_add_router, travel_edit_router, markup_router, travel_help_route_router)
+                   edit_profile_router, travel_add_router,
+                   travel_edit_router, markup_router,
+                   travel_help_route_router, travel_help_weather_router)
 
 
-@dp.error(ExceptionTypeFilter(exc.GeocoderServiceError))
+@dp.error(ExceptionTypeFilter(GeocoderServiceError))
 async def catch_geocoder_exc(event: ErrorEvent):
     print('GEOCODER NOT WORKING')
-    await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.SERVICE_GEO.value)  # noqa #type: ignore
+    if event.update.message:
+        await event.update.message.bot.send_message(  # noqa #type: ignore
+            event.update.message.from_user.id, Errors.SERVICE_GEO.value)  # noqa #type: ignore
+    else:
+        await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
+            event.update.callback_query.from_user.id, Errors.SERVICE_GEO.value)  # noqa #type: ignore
 
-#
+
+@dp.error(ExceptionTypeFilter(OpenMeteoError))
+async def catch_meteo_exc(event: ErrorEvent):
+    print('OPENMETEO NOT WORKING')
+    if event.update.message:
+        await event.update.message.bot.send_message(  # noqa #type: ignore
+            event.update.message.from_user.id, Errors.SERVICE_METEO.value)  # noqa #type: ignore
+    else:
+        await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
+            event.update.callback_query.from_user.id, Errors.SERVICE_METEO.value)  # noqf #type: ignore
+
 # @dp.error()
 # async def catch_all_exc(event: ErrorEvent):
 #     await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.WENT_WRONG.value)  # noqa #type: ignore
@@ -45,5 +67,5 @@ async def main() -> None:
     # await db.delete_tables()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.CRITICAL, stream=sys.stdout)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())

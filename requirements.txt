@@ -3,7 +3,7 @@ aiosqlite
 httpx
 aiogram
 geopy
-open-meteo
+timezonefinderL
 polyline
 dateparser
 pillow

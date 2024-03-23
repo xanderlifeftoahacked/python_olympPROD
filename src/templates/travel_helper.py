@@ -1,4 +1,7 @@
+from datetime import datetime
 from enum import Enum
+
+from api.gettime import get_date_str_from_obj
 
 
 class Templates(Enum):
@@ -12,3 +15,15 @@ class Templates(Enum):
     SELECT_TYPE = 'Выберите, как хотите получить маршрут:'
     ROUTE_READY = 'Маршрут готов!'
     BAD_LOC = 'Не можем найти вас! Попробуйте еще.'
+
+    NO_WEATHER = 'Не можем узнать погоду!'
+    DONT_KNOW = 'Прогноза погоды на эти даты еще нет!'
+
+
+class TemplatesGen:
+    @classmethod
+    def weather(cls, sunrise: datetime, sunset: datetime, temp_min: float,
+                temp_max: float, weather_condition: str, date: datetime) -> str:
+        return f'''<u><i>{get_date_str_from_obj(date)}</i></u>:
+  🌅 {sunrise.time()} - {sunset.time()}
+  🌡️ {weather_condition},  от {temp_min}℃  до {temp_max}℃ '''

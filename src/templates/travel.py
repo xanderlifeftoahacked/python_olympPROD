@@ -46,10 +46,10 @@ class TemplatesGen:
         places = "\n".join([f"    <b>{index + 1}.</b> {place[0]}. <i>\n({get_date_str_from_obj(get_date_obj(place[3]))} - {get_date_str_from_obj(get_date_obj(place[4]))})</i>" for index,
                            place in enumerate(places)])
 
-        if travel_data['friends']:
+        if 'friends' in travel_data and travel_data['friends']:
             friends_str = f"Друзья: <b>{', '.join([str(x) for x in travel_data['friends']])}</b>"
         else:
-            friends_str = ''
+            friends_str = 'Друзья: отсутствуют'
 
         return f'''    <u>Путешествие {id} </u>
 
