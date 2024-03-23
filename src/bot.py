@@ -9,6 +9,7 @@ from aiogram.types import ErrorEvent
 from geopy import exc
 
 import db
+from templates.errors import *
 from routes.profile_add import router as registration_router
 from routes.welcome import router as welcome_router
 from routes.markups import router as markup_router
@@ -16,9 +17,7 @@ from routes.profile_edit import router as edit_profile_router
 from routes.travel_add import router as travel_add_router
 from routes.travel_edit import router as travel_edit_router
 from routes.travel_help_route import router as travel_help_route_router
-from templates.errors import Errors
 
-from templates.errors import *
 TOKEN = str(getenv("BOT_TOKEN"))
 
 dp = Dispatcher()
