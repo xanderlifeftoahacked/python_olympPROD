@@ -57,6 +57,12 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
 
 https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/982f009c-9649-4a74-a51f-309464284c3a
 
+### Просмотр достопримечательностей
+Пятый пункт меню помощника. Отправит десять самых популярных достопримечательностей в радиусе 10 километров от выбранной локации. Также отправит карту, 
+на которой эти достопримечательности будут отмечены.
+
+https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/f93be38b-e5cf-4797-b178-a42e1908cea6
+
 
 
 
