@@ -78,13 +78,13 @@ async def deleted_place_handler(message: CallbackQuery, state: FSMContext) -> No
     full_id = message.data.split(':', 1)[1]  # noqa #type: ignore
     travel_id = int(full_id.split(':')[0])  # noqa #type: ignore
     location_index = int(full_id.split(':')[2])
-
+    travel_id_for_button = ':'.join(full_id.split(':')[0:2])
     travel_data = await TravelRepository.select_by_id(travel_id)
     travel_data['places'].pop(location_index)
 
     await state.set_state(None)
     await TravelRepository.update_by_id(travel_id, {'places': travel_data['places']})
-    await safe_message_edit(message, Templates.DELETED_PLACE.value, reply_markup=kb_travel_edit_generate(full_id))
+    await safe_message_edit(message, Templates.DELETED_PLACE.value, reply_markup=kb_travel_edit_generate(travel_id_for_button))
 
 
 @ router.callback_query(F.data.startswith(Commands.EDIT_TRAVEL_NAME.value))
