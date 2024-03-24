@@ -36,7 +36,8 @@ def kb_go_back_generate(id):
 
 def kb_select_place_generate(places_count, id):
     if places_count:
-        keyboard = [[types.InlineKeyboardButton(text=f'{Templates.LOCATION_NUMBER.value} {i}', callback_data=f'{Commands.SELECTING_LOC.value}:{id}:{i-1}')]
+        keyboard = [[types.InlineKeyboardButton(text=f'{Templates.LOCATION_NUMBER.value} {i}',
+                                                callback_data=f'{Commands.SELECTING_LOC.value}:{id}:{i-1}')]
                     for i in range(1, places_count+1)]
         keyboard.append(
             [inline_button_with_id(CommonCommands.GO_BACK.value, id)])

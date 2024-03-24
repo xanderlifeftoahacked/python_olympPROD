@@ -10,6 +10,7 @@ from templates.travel_helper import Templates
 
 GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
 GEOAPIFY_TOKEN = 'c5429f227e67422fa582ad93623882c1'
+
 graphhopper_url = 'https://graphhopper.com/api/1/'
 
 if getenv('RUNNING_DOCKER'):
@@ -47,6 +48,33 @@ def generate_markers_str(locations: List[Any]) -> str:
         marker = f"lonlat:{','.join([str(x) for x in location[2:0:-1]])};{marker_params}|"
         markers_str += marker
     return markers_str[:-1]
+
+
+def generate_markers_str_for_places(locations: List[Any], main_lat: float, main_lon: float) -> str:
+    markers_str = "marker="
+    marker_params = 'type:awesome;iconsize:large;color:%23144a10;size:large;shadow:no;icontype:awesome;icon:flag'
+    for location in locations:
+        marker = f"lonlat:{','.join([str(x) for x in location[::-1]])};{marker_params}|"
+        markers_str += marker
+    markers_str += f"lonlat:{main_lon},{main_lat};type:awesome;iconsize:large;color:%23144a10;size:xx-large;shadow:no;icontype:awesome;icon:flag"
+    return markers_str
+
+
+async def make_markers_map(locations: List[Tuple[float, float]], main_lat: float, main_lon: float) -> Any:
+    markers_str = generate_markers_str_for_places(
+        locations, main_lat, main_lon)
+    url = (f'https://maps.geoapify.com/v1/staticmap?'
+           f'width=1920&height=1080&'
+           f'apiKey={GEOAPIFY_TOKEN}&'
+           f'{markers_str}')
+
+    response = await client.get(url)
+
+    if response.status_code == 200:
+        img = Image.open(io.BytesIO(response.content))
+        return True, Templates.ROUTE_READY.value, img
+    else:
+        return False, Templates.OSM_ERROR.value, None
 
 
 async def try_to_build_route(locations: List[List[Any]], from_raw=True) -> Tuple[bool, str, Any]:

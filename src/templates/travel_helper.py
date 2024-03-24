@@ -23,6 +23,7 @@ class Templates(Enum):
     LOCATION_NUMBER = 'Локация №'
     OPENTRIP_ERROR = 'Ошибка при работе с сервисом для работы с местами. Попробуйте позже'
     NO_INTERESTING = 'В радиусе 10 километров не найдено никаких интересных мест!'
+    PLACES_TOVISIT = 'Вот 10 мест, которые вам точно стоит посетить!\n\n'
 
 
 class TemplatesGen:
@@ -32,3 +33,19 @@ class TemplatesGen:
         return f'''<u><i>{get_date_str_from_obj(date)}</i></u>:
   🌅 {sunrise.strftime("%H:%M")} - {sunset.strftime("%H:%M")}
   🌡️ {weather_condition},  от {temp_min}℃  до {temp_max}℃ '''
+
+    @classmethod
+    def place(cls, name: str, description: str, distance: int, address: str, is_open: bool) -> str:
+        if is_open:
+            last_str = '<u>Открыто сейчас!</u>'
+        else:
+            last_str = '<u>Закрыто сейчас</u>'
+
+        if description:
+            prelast_str = f'Описание: <i>{description}</i>\n    '
+        else:
+            prelast_str = ''
+
+        return f'''<b>{name}</b>
+    <b>Адрес:</b> {address} <i>({distance}м)</i>
+    {prelast_str}{last_str}\n\n'''
