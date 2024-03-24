@@ -16,7 +16,7 @@
 ```
 
 ## Функционал бота
-**_! На момент заверешения работы над ботом его функционал, вид кнопок и т.п. могут незначительно отличаться от представленных на видео и скриншотах. !_**
+**_На момент заверешения работы над ботом его функционал, вид кнопок и т.п. могут незначительно отличаться от представленных на видео и скриншотах._**
 ### Регистрация
 При регистрации пользователь поочередно вводит все необоходимые данные. С телефона можно поделиться местоположением для определения города.
 С компьютера - написать текстом. Существует ограничение на максимальную длину описания. После регистрации можно изменить любые данные 
@@ -80,10 +80,10 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
   * **Nominatim** ([repo](https://github.com/osm-search/Nominatim)) - используется для геокодинга (через geopy)
   * **Graphhopper** ([repo](https://github.com/graphhopper/graphhopper)) - используется для построения маршрутов
   * **Geoapify (static map api)** ([osm wiki](https://wiki.openstreetmap.org/wiki/Geoapify)) - используется для получения изображений с маршрутом
-  * **OpenTripMap** ([rapidapi](https://rapidapi.com/opentripmap/api/places1/details)) - используется для поиска достопримечательностей и кафе
 #### Остальные:
   * **Open-meteo** ([repo](https://github.com/frenck/python-open-meteo)) - используется для получения данных о погоде (через одноименную библиотеку)
-
+  * **Foursquare** ([page](https://location.foursquare.com/)) - используется для получения данных о достопримечательностях и кафе
+ 
 ## Структура базы данных
 
 <img src="https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/blob/main/.readmemedia/database_schema.png" width="500"/>
