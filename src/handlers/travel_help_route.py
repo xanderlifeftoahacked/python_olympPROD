@@ -6,8 +6,8 @@ from aiogram.types import BufferedInputFile, CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 from api.getlocation import get_location_from_raw
 
-from api.make_route import try_to_build_route
-from fsm.travel_help_route import MakingRoute
+from api.getmap import try_to_build_route
+from fsm.travel_help import Helper
 from keyboards.travel_helper import kb_go_back_generate, kb_select_route_type
 from repository import TravelRepository
 from templates.travel_helper import *
@@ -59,12 +59,12 @@ async def make_route_to_travel_handler(message: CallbackQuery, state: FSMContext
         await safe_message_edit(message, Templates.NO_PLACES.value, kb_go_back_generate(full_id))  # noqa #type: ignore
         return
 
-    await state.set_state(MakingRoute.choosing_place)
+    await state.set_state(Helper.choosing_place)
     await state.update_data(user_loc=location)
     await safe_message_edit(message, Templates.SEND_LOC.value, kb_go_back_generate(full_id))  # noqa #type: ignore
 
 
-@ router.message(MakingRoute.choosing_place, F.location)
+@ router.message(Helper.choosing_place, F.location)
 async def place_handler(message: Message, state: FSMContext) -> None:
     if not message.location:
         await message.answer(text=Templates.BAD_LOC.value)
@@ -88,7 +88,7 @@ async def place_handler(message: Message, state: FSMContext) -> None:
     await state.set_state(None)
 
 
-@ router.message(MakingRoute.choosing_place, ~F.text.startswith('/'))
+@ router.message(Helper.choosing_place, ~F.text.startswith('/'))
 async def place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
     loc, lat, lon = await get_location_from_raw(place)  # noqa #type: ignore

@@ -23,6 +23,7 @@ from handlers.travel_edit import router as travel_edit_router
 from handlers.travel_help_route import router as travel_help_route_router
 from handlers.travel_help_weather import router as travel_help_weather_router
 from handlers.travel_help_places import router as travel_help_places_router
+from handlers.travel_help_hotels import router as travel_help_hotels_router
 
 TOKEN = str(getenv("BOT_TOKEN"))
 
@@ -31,7 +32,7 @@ dp.include_routers(registration_router, welcome_router,
                    edit_profile_router, travel_add_router,
                    travel_edit_router, markup_router,
                    travel_help_route_router, travel_help_weather_router,
-                   travel_help_places_router)
+                   travel_help_places_router, travel_help_hotels_router)
 
 
 @dp.error(ExceptionTypeFilter(GeocoderServiceError))
@@ -55,10 +56,27 @@ async def catch_meteo_exc(event: ErrorEvent):
         await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
             event.update.callback_query.from_user.id, Errors.SERVICE_METEO.value)  # noqf #type: ignore
 
+
+@dp.error(ExceptionTypeFilter(httpx.ConnectTimeout))
+async def catch_timeout_exc(event: ErrorEvent):
+    print('CONNECTION TIMEOUT')
+    if event.update.message:
+        await event.update.message.bot.send_message(  # noqa #type: ignore
+            event.update.message.from_user.id, Errors.TIMEOUT.value)  # noqa #type: ignore
+    else:
+        await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
+            event.update.callback_query.from_user.id, Errors.TIMEOUT.value)  # noqf #type: ignore
+
+
+#
 # @dp.error()
 # async def catch_all_exc(event: ErrorEvent):
-#     await event.update.callback_query.message.bot.send_message(event.update.callback_query.from_user.id, Errors.WENT_WRONG.value)  # noqa #type: ignore
-#
+#     if event.update.message:
+#         await event.update.message.bot.send_message(  # noqa #type: ignore
+#             event.update.message.from_user.id, Errors.SERVICE_METEO.value)  # noqa #type: ignore
+#     else:
+#         await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
+#             event.update.callback_query.from_user.id, Errors.SERVICE_METEO.value)  # noqf #type: ignore
 
 
 async def main() -> None:
