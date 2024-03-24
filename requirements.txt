@@ -7,4 +7,4 @@ timezonefinderL
 polyline
 dateparser
 pillow
-mashumaro
+mashumaro[orjson]
