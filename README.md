@@ -51,6 +51,11 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
 
 https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/5e0c2ac4-50b1-479f-942c-7b3453be69f6
 
+### Просмотр погоды
+Третий пункт меню помощника. Покажет прогноз погоды на даты посещения локации (но только на те, что не позже 16 дней от текущей) . 
+Прогноз содержит температуру, местное время восхода и захода солнца и осадки. 
+
+https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/982f009c-9649-4a74-a51f-309464284c3a
 
 
 
@@ -63,12 +68,13 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
   * **Aiogram** - один из популярных фреймворков для работы с Telegram Bot Api. Был выбран исходя из рекомендаций сообщества.
   * **SQLAlchemy** - ORM для более удобной и безопасной работы с базой данных.
   * **Aiosqlite** - асинхронный драйвер для базы данных.
-  * **Open-meteo** - получение информации о погоде 
+  * **Open-meteo** - получение информации о погоде (билиотека находится в директории src/lib, я внес в нее одно небольшое изменение)
   * **Geopy** - геокодинг (поиск локаций)
   * **Httpx** - асинхронные url-запросы
   * **Polyline** - используется для декодирования маршрутов, полученных от API
-  * **Dateparser** - используется для распознования дат.
+  * **Dateparser** - используется для распознования дат
   * **Pillow** - используется для работы с изображениями
+  * **TimezonefinderL** - используется для получения часового пояса из координат
 ### Сторонние API
 #### OSM-based (используют OSM):
   * **Nominatim** ([repo](https://github.com/osm-search/Nominatim)) - используется для геокодинга (через geopy)
@@ -76,7 +82,7 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
   * **Geoapify (static map api)** ([osm wiki](https://wiki.openstreetmap.org/wiki/Geoapify)) - используется для получения изображений с маршрутом
   * **OpenTripMap** ([rapidapi](https://rapidapi.com/opentripmap/api/places1/details)) - используется для поиска достопримечательностей и кафе
 #### Остальные:
-  * **Open-meteo** ([repo](https://github.com/open-meteo/open-meteo)) - используется для получения данных о погоде (через одноименную библиотеку)
+  * **Open-meteo** ([repo](https://github.com/frenck/python-open-meteo)) - используется для получения данных о погоде (через одноименную библиотеку)
 
 ## Структура базы данных
 
