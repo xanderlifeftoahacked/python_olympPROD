@@ -14,7 +14,6 @@ router = Router()
 
 @router.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
-    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     await state.set_state(None)
     await message.answer("Добро пожаловать!", reply_markup=kb_main)
 

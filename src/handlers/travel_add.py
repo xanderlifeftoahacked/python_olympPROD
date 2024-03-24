@@ -24,6 +24,7 @@ router = Router()
 @router.message(F.text == CommonCommands.MENU_TRAVELS.value)
 async def menu_travel_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id  # noqa #type: ignore
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     if await UserRepository.id_exists(user_id):
         await message.answer(text=Templates.TRAVEL_MENU.value, reply_markup=kb_travel_menu)
     else:
@@ -34,6 +35,7 @@ async def menu_travel_handler(message: Message, state: FSMContext) -> None:
 async def list_travels_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id  # noqa #type: ignore
     user = await UserRepository.select_by_id(user_id)
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     if not user['travels']:  # noqa #type: ignore
         await message.answer(Templates.NO_TRAVELS.value, reply_markup=kb_travel_menu)
     else:
@@ -48,6 +50,7 @@ async def list_travels_handler(message: Message, state: FSMContext) -> None:
 
 @router.message(F.text == Commands.ADD_TRAVEL.value)
 async def add_travel_handler(message: Message, state: FSMContext) -> None:
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     await state.set_state(AddTravel.choosing_name)
     await message.answer(text=Templates.ADD_NAME.value)
 
@@ -55,6 +58,7 @@ async def add_travel_handler(message: Message, state: FSMContext) -> None:
 @router.message(AddTravel.choosing_name, ~F.text.startswith('/'))
 async def select_name_handler(message: Message, state: FSMContext) -> None:
     name = message.text
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if len(name) > MAX_TRAVEL_LEN:  # noqa #type: ignore
         await message.answer(Templates.TOO_LONG_NAME.value)
         return
@@ -70,6 +74,7 @@ async def select_name_handler(message: Message, state: FSMContext) -> None:
 @router.message(AddTravel.choosing_desc, ~F.text.startswith('/'))
 async def select_desc_handler(message: Message, state: FSMContext) -> None:
     desc = message.text
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if len(desc) > MAX_TRAVEL_LEN:  # noqa #type: ignore
         await message.answer(Templates.TOO_LONG_DESC.value)
         return
@@ -97,6 +102,7 @@ async def select_place_handler(message: Message, state: FSMContext) -> None:
 @router.message(AddTravel.choosing_places, ~F.text.startswith('/'))
 async def select_place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     loc, lat, lon = await get_location_from_raw(place)  # noqa #type: ignore
     if not loc:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_PLACE.value)
@@ -109,6 +115,7 @@ async def select_place_handler_str(message: Message, state: FSMContext) -> None:
 @ router.message(AddTravel.choosing_date_end, ~F.text.startswith('/'))
 async def select_date_handler(message: Message, state: FSMContext) -> None:
     date_str = message.text
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     date_obj = get_date_obj(date_str)  # noqa #type: ignore
     cur_state = await state.get_state()
     if not date_obj:  # noqa #type: ignore
@@ -171,6 +178,7 @@ async def good_place_handler(message: CallbackQuery, state: FSMContext) -> None:
     places.append(state_data['cur_loc'])
     await state.update_data(places=places)
     await state.set_state(AddTravel.choosing_date_start)
+    await safe_message_edit(message, Templates.LOC_SELECTED.value)
     await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_travel_menu, text=Templates.ADD_DATE_START.value)  # noqa #type: ignore
 
 

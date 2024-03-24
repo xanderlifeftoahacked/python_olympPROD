@@ -34,6 +34,12 @@ def kb_go_back_generate(id):
         inline_keyboard=[[inline_button_with_id(CommonCommands.GO_BACK.value, id)]])
 
 
+def kb_select_source_generate(id):
+    return types.InlineKeyboardMarkup(
+        inline_keyboard=[[inline_button_with_id(
+            Commands.YANDEX_TILES.value, id), inline_button_with_id(Commands.OSM_TILES.value, id)]])
+
+
 def kb_select_place_generate(places_count, id):
     if places_count:
         keyboard = [[types.InlineKeyboardButton(text=f'{Templates.LOCATION_NUMBER.value} {i}',

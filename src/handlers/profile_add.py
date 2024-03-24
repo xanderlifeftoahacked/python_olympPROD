@@ -22,6 +22,7 @@ router = Router()
 @router.message(F.text == CommonCommands.MY_PROFILE.value)
 async def profile_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id  # noqa #type: ignore
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     await state.set_state(None)
     if await UserRepository.id_exists(user_id):
         await message.answer(Templates.ST_LOOK_OR_EDIT.value, reply_markup=kb_edit_profile)
@@ -39,6 +40,7 @@ async def start_reg(query: CallbackQuery, state: FSMContext) -> None:
 async def age_handler(message: Message, state: FSMContext):
     age = str(message.text).strip()
 
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     if not re.fullmatch(age_regex, age):
         await message.answer(text=Templates.ST_BAD_AGE.value)
         return
@@ -52,6 +54,7 @@ async def age_handler(message: Message, state: FSMContext):
 async def bio_handler(message: Message, state: FSMContext) -> None:
     bio = str(message.text).strip()
 
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     if len(bio) > MAX_BIO_LEN:
         await message.answer(text=Templates.ST_BAD_BIO.value)
         return
@@ -83,6 +86,7 @@ async def city_handler(message: Message, state: FSMContext) -> None:
 @router.message(RegisterProfile.choosing_city, ~F.text.startswith('/'), F.text != CommonCommands.MAIN_MENU.value)
 async def city_handler_str(message: Message, state: FSMContext) -> None:
     (country, city, coords) = await get_country_city_from_raw(message.text)  # noqa #type: ignore
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     if not country or not city:
         await message.answer(text=Templates.ST_BAD_LOC.value)
         return

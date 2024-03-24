@@ -6,5 +6,6 @@ geopy
 timezonefinderL
 polyline
 dateparser
+staticmap
 pillow
 mashumaro[orjson]

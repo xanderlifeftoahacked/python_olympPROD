@@ -104,6 +104,7 @@ async def edit_desc_handler(message: CallbackQuery, state: FSMContext) -> None:
 @ router.message(EditTravel.changing_desc, ~F.text.startswith('/'))
 async def edited_desc_handler(message: Message, state: FSMContext) -> None:
     desc = message.text
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     state_data = await state.get_data()
     if len(desc) > MAX_TRAVEL_LEN:  # noqa #type: ignore
         await message.answer(Templates.TOO_LONG_DESC.value)
@@ -117,6 +118,7 @@ async def edited_desc_handler(message: Message, state: FSMContext) -> None:
 async def edited_name_handler(message: Message, state: FSMContext) -> None:
     name = message.text
     state_data = await state.get_data()  # noqa #type: ignore
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if len(name) > MAX_TRAVEL_LEN:  # noqa #type: ignore
         await message.answer(Templates.TOO_LONG_NAME.value)
         return
@@ -177,6 +179,7 @@ async def added_friend_handler(message: Message, state: FSMContext):
     friend_id = str(message.text).strip()
     state_data = await state.get_data()
 
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if not re.fullmatch(validation.id_regex, friend_id) or not await UserRepository.id_exists(int(friend_id)):
         await message.answer(text=Templates.ST_BAD_FRIEND.value,
                              reply_markup=kb_input)
@@ -252,6 +255,7 @@ async def select_place_handler(message: Message, state: FSMContext) -> None:
 @router.message(EditTravel.changing_places, ~F.text.startswith('/'))
 async def select_place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     loc, lat, lon = await get_location_from_raw(place)  # noqa #type: ignore
     if not loc:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_PLACE.value)
@@ -266,6 +270,7 @@ async def select_date_handler(message: Message, state: FSMContext) -> None:
     date_str = message.text
     date_obj = get_date_obj(date_str)  # noqa #type: ignore
     cur_state = await state.get_state()
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if not date_obj:  # noqa #type: ignore
         await message.answer(text=Templates.BAD_DATE.value)
         return
@@ -322,12 +327,13 @@ async def bad_date_handler(message: CallbackQuery, state: FSMContext) -> None:
 @ router.callback_query(EditTravel.changing_places, F.data == CommonCommands.GOOD.value)
 async def good_place_handler(message: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(EditTravel.choosing_date_start)
+    await safe_message_edit(message, Templates.LOC_SELECTED.value)
     await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_travel_menu, text=Templates.ADD_DATE_START.value)  # noqa #type: ignore
 
 
 @ router.callback_query(EditTravel.changing_places, F.data == CommonCommands.BAD.value)
 async def bad_place_handler(message: CallbackQuery, state: FSMContext) -> None:
-    await safe_message_edit(message, Templates.ADD_PLACE.value, reply_markup=kb_input)
+    await safe_message_edit(message, Templates.ADD_PLACE.value)
 
 
 @ router.callback_query(F.data.startswith(Commands.HELP_TRAVEL.value))

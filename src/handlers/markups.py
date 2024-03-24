@@ -103,6 +103,7 @@ async def sent_markup(message: Message, state: FSMContext) -> None:
     state_data = await state.get_data()
     user_id = message.from_user.id  # noqa #type: ignore
 
+    await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     path_to_save = validate_path(str(state_data['travel_id']))
     if message.document:
         file_id = message.document.file_id  # noqa #type: ignore

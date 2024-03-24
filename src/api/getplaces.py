@@ -22,6 +22,13 @@ def get_url_interesting_places(lat: float, lon: float):
             'sort=POPULARITY&limit=10')
 
 
+def get_url_cafes(lat: float, lon: float):
+    return ('https://api.foursquare.com/v3/places/search?'
+            f'll={lat},{lon}&radius=10000&categories=16000%2C10000&'
+            'fields=name%2Clocation%2Cdistance%2Cdescription%2Chours%2Cgeocodes&'
+            'sort=POPULARITY&limit=10')
+
+
 async def get_interesting_places(lat: float, lon: float) -> Tuple[str, List]:
     response = await client.get(url=get_url_interesting_places(lat, lon), headers=headers)
     if response.status_code != 200 or not response.json():
@@ -32,7 +39,7 @@ async def get_interesting_places(lat: float, lon: float) -> Tuple[str, List]:
         return Templates.NO_INTERESTING.value, []
     ans = ''
     places = []
-    for place in response['results']:
+    for index, place in enumerate(response['results'], 1):
         if 'description' in place:
             description = place['description']
         else:
@@ -41,7 +48,7 @@ async def get_interesting_places(lat: float, lon: float) -> Tuple[str, List]:
                                   name=place['name'],
                                   description=description,
                                   address=place['location']['formatted_address'],
-                                  distance=place['distance'])
+                                  distance=place['distance'], index=index)
         places.append((place['geocodes']['main']['latitude'],
                        place['geocodes']['main']['longitude']))
     return ans, places

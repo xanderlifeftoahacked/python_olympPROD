@@ -34,6 +34,7 @@ class Templates(Enum):
     DELETE_PLACES = 'Выберете место, которое хотите удалить.'
     DELETED_PLACE = 'Место успешно удалено.'
     ADDED_ONE_PLACE = 'Место успешно добавлено.'
+    LOC_SELECTED = 'Локация выбрана!'
     SURE_DELETING = 'Вы уверены, что хотите удалить это путешествие?'
     TRAVEL_DELETED = 'Путешествие удалено!'
     SELECT_HELPER = 'Меню помощника:'

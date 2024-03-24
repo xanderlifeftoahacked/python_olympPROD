@@ -25,6 +25,10 @@ class Templates(Enum):
     NO_INTERESTING = 'В радиусе 10 километров не найдено никаких интересных мест!'
     PLACES_TOVISIT = 'Вот 10 мест, которые вам точно стоит посетить!\n\n'
 
+    SELECT_TILE_SOURCE = ('<b>Выберите источник, из которого хотите получать изображение карты:</b>\n\n'
+                          '<b>Yandex</b> - закрытый исходный код, очень высокая скорость получения изображения\n'
+                          '<b>OpenStreetMap</b> - открытый исходный код, низкая скорость получения изображения')
+
 
 class TemplatesGen:
     @classmethod
@@ -35,17 +39,17 @@ class TemplatesGen:
   🌡️ {weather_condition},  от {temp_min}℃  до {temp_max}℃ '''
 
     @classmethod
-    def place(cls, name: str, description: str, distance: int, address: str, is_open: bool) -> str:
+    def place(cls, name: str, description: str, distance: int, address: str, is_open: bool, index: int) -> str:
         if is_open:
-            last_str = '<u>Открыто сейчас!</u>'
+            last_str = '<u>Точно открыто сейчас!</u>'
         else:
-            last_str = '<u>Закрыто сейчас</u>'
+            last_str = ''
 
         if description:
             prelast_str = f'Описание: <i>{description}</i>\n    '
         else:
             prelast_str = ''
 
-        return f'''<b>{name}</b>
+        return f'''<b>{index}. {name}</b>
     <b>Адрес:</b> {address} <i>({distance}м)</i>
     {prelast_str}{last_str}\n\n'''

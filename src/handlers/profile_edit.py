@@ -68,7 +68,7 @@ async def loc_chosen(message: Message, state: FSMContext):
 @router.message(SettingProfile.choosing_location, ~F.text.startswith('/'), F.text != CommonCommands.MAIN_MENU)
 async def loc_chosen_str(message: Message, state: FSMContext) -> None:
     (country, city, coords) = await get_country_city_from_raw(message.text)  # noqa #type: ignore
-
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if not country or not city:
         await message.answer(text=Templates.ST_BAD_LOC.value)
         return
@@ -85,7 +85,7 @@ async def loc_chosen_str(message: Message, state: FSMContext) -> None:
 async def bio_chosen(message: Message, state: FSMContext):
     await state.update_data(chooseen_age=message.text)
     bio = str(message.text).strip()
-
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if len(bio) > MAX_BIO_LEN:
         await message.answer(text=Templates.ST_BAD_BIO.value)
         return
@@ -99,6 +99,7 @@ async def bio_chosen(message: Message, state: FSMContext):
 async def age_chosen(message: Message, state: FSMContext):
     await state.update_data(chooseen_age=message.text)
     age = str(message.text).strip()
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore
     if not re.fullmatch(age_regex, age):
         await message.answer(text=Templates.ST_BAD_AGE.value)
         return

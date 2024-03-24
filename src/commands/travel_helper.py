@@ -13,3 +13,5 @@ class Commands(Enum):
     FRIEND_FIND = 'Найти друга'
 
     SELECTING_LOC = 'SelLoc'
+    YANDEX_TILES = 'Yandex'
+    OSM_TILES = 'OSM'
