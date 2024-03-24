@@ -19,6 +19,11 @@ class Templates(Enum):
     NO_WEATHER = 'Не можем узнать погоду!'
     DONT_KNOW = 'Такого прогноза еще нет!'
 
+    SELECT_LOCATION = '<b>Выберите место, рядом с которым надо найти достоприечательности:</b>\n'
+    LOCATION_NUMBER = 'Локация №'
+    OPENTRIP_ERROR = 'Ошибка при работе с сервисом для работы с местами. Попробуйте позже'
+    NO_INTERESTING = 'В радиусе 10 километров не найдено никаких интересных мест!'
+
 
 class TemplatesGen:
     @classmethod

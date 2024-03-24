@@ -22,6 +22,7 @@ from handlers.travel_add import router as travel_add_router
 from handlers.travel_edit import router as travel_edit_router
 from handlers.travel_help_route import router as travel_help_route_router
 from handlers.travel_help_weather import router as travel_help_weather_router
+from handlers.travel_help_places import router as travel_help_places_router
 
 TOKEN = str(getenv("BOT_TOKEN"))
 
@@ -29,7 +30,8 @@ dp = Dispatcher()
 dp.include_routers(registration_router, welcome_router,
                    edit_profile_router, travel_add_router,
                    travel_edit_router, markup_router,
-                   travel_help_route_router, travel_help_weather_router)
+                   travel_help_route_router, travel_help_weather_router,
+                   travel_help_places_router)
 
 
 @dp.error(ExceptionTypeFilter(GeocoderServiceError))

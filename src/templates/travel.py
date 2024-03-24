@@ -57,7 +57,7 @@ class TemplatesGen:
         Описание: <b>{travel_data['description']}</b>
         {friends_str}
         Места: 
-    {places}
+{places}
 
         '''
 
@@ -67,7 +67,7 @@ class TemplatesGen:
 
     @classmethod
     def show_places(cls, travel_data):
-        return "\n".join([f"    <b>{index + 1}.</b> {place[0]}. <i>\n({place[3]} - {place[4]})</i>" for index,
+        return "\n".join([f"<b>   {index + 1}.</b> {place[0]}. <i>\n({place[3]} - {place[4]})</i>" for index,
                           place in enumerate(travel_data['places'])])
 
     @classmethod

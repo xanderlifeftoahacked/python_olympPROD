@@ -11,3 +11,5 @@ class Commands(Enum):
     ATTRACTIONS_INFO = 'Достопримечательности'
     CAFES_INFO = 'Кафе и рестораны'
     FRIEND_FIND = 'Найти друга'
+
+    SELECTING_LOC = 'SelLoc'
