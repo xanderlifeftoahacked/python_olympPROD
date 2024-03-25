@@ -20,10 +20,17 @@ class Templates(Enum):
     DONT_KNOW = 'Такого прогноза еще нет. Либо вы уже посетили это место!'
 
     SELECT_LOCATION = '<b>Выберите место, рядом с которым надо найти достоприечательности:</b>\n'
+    SELECT_CAFE = '<b>Выберите, где хотите поискать еду:</b>\n'
+    SELECT_HOTELS = '<b>Выберите место, рядом с которым будем искать номера:</b>\n'
     LOCATION_NUMBER = 'Локация №'
-    OPENTRIP_ERROR = 'Ошибка при работе с сервисом для работы с местами. Попробуйте позже'
+    OPENTRIP_ERROR = 'Ошибка при работе с сервисом для работы с отелями. Попробуйте позже'
     NO_INTERESTING = 'В радиусе 10 километров не найдено никаких интересных мест!'
     PLACES_TOVISIT = 'Вот 10 мест, которые вам точно стоит посетить!\n\n'
+    CAFE_TOVISIT = 'Вот несколько кафе, куда можно зайти:\n\n'
+    WAITING_INFO = 'Ждем информацию...'
+    NO_HOTELS = 'Подходящих номеров поблизости не найдено!'
+    NOTHING_FOUND = 'Ничего подоходящего поблизости не найдено!'
+    HOTELS_TOVISIT = '<b>Вот доступные на ваши даты двухместные номера, в которых не стыдно поселиться с подружкой! Вам же не жалко денег?</b>\n'
 
     SELECT_TILE_SOURCE = ('<b>Выберите источник, из которого хотите получать изображение карты:</b>\n\n'
                           '<b>Yandex</b> - закрытый исходный код, очень высокая скорость получения изображения\n'
@@ -40,16 +47,15 @@ class TemplatesGen:
 
     @classmethod
     def place(cls, name: str, description: str, distance: int, address: str, is_open: bool, index: int) -> str:
-        if is_open:
-            last_str = '<u>Точно открыто сейчас!</u>'
-        else:
-            last_str = ''
+        last_str = '<u>\nТочно открыто сейчас!</u>' if is_open else ''
+        prelast_str = f'\n    <b>Описание:</b> <i>{description}</i>    ' if description else ''
 
-        if description:
-            prelast_str = f'Описание: <i>{description}</i>\n    '
-        else:
-            prelast_str = ''
+        return f'<b>{index}. {name}</b>\n    <b>Адрес:</b> {address} <i>({distance}м)</i>{prelast_str}{last_str}\n\n'
 
-        return f'''<b>{index}. {name}</b>
-    <b>Адрес:</b> {address} <i>({distance}м)</i>
-    {prelast_str}{last_str}\n\n'''
+    @classmethod
+    def hotel(cls, name: str, desc: str, price: str, index: int) -> str:
+        return f'{index}. <b>{name}</b>\n    <b>Описание:</b> {desc}\n    <b>Цена:</b> {price}\n\n'
+
+    @classmethod
+    def cafe(cls, name: str, addr: str, url: str, hours: str, index: int) -> str:
+        return f'{index}. <b><a href="{url}">{name}</a></b>\n    <b>Адрес:</b> {addr}\n    <b>Часы работы:</b> {hours}\n\n'

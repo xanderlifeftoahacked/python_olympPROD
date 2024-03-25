@@ -68,8 +68,9 @@ class TemplatesGen:
 
     @classmethod
     def show_places(cls, travel_data):
+        places = sorted(travel_data['places'], key=lambda x: x[3])
         return "\n".join([f"<b>   {index + 1}.</b> {place[0]}. <i>\n({place[3]} - {place[4]})</i>" for index,
-                          place in enumerate(travel_data['places'])])
+                          place in enumerate(places)])
 
     @classmethod
     def friends(cls, friends):
