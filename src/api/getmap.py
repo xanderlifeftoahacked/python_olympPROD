@@ -10,8 +10,8 @@ from polyline import decode
 from api.httpxclient import client
 from templates.travel_helper import Templates
 
-YANDEX_TILES_TOKEN = '3e88d9f7-785e-434f-af61-30864930eae3'
-GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'
+YANDEX_TILES_TOKEN = '3e88d9f7-785e-434f-af61-30864930eae3'  # TODO
+GRAPHHOPPER_TOKEN = '41b99b2f-0843-4ccc-947b-89ef6cefade4'  # TODO
 FLAG_ICON_BIG = './samples/flag_big.png'  # 64 x 64
 FLAG_ICON_SMALL = './samples/flag_small.png'  # 32 x 32
 

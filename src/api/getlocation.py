@@ -2,8 +2,8 @@ from typing import Any, List, Tuple
 from geopy.geocoders import Nominatim
 from geopy.adapters import AioHTTPAdapter
 
-geolocator = Nominatim(user_agent='xander_travelbot',
-                       adapter_factory=AioHTTPAdapter)
+geolocator = Nominatim(user_agent='xander_traveltg',
+                       adapter_factory=AioHTTPAdapter, timeout=5)  # noqa #type: ignore
 
 
 async def get_coords_from_raw(loc: str) -> List[Any]:

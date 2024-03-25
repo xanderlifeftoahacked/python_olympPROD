@@ -42,4 +42,4 @@ def get_date_str_from_obj(date: datetime) -> Any:
 
 
 def get_date_formatted(date: datetime) -> Any:
-    return f'{date.year}-{date.month}-{date.day}'
+    return date.strftime("%Y-%m-%d")
