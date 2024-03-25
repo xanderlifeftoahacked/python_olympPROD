@@ -87,14 +87,16 @@ async def add_markup_handler(message: CallbackQuery, state: FSMContext) -> None:
 
 @ router.callback_query(F.data.startswith(Commands.PRIVATE.value))
 async def add_private_markup_handler(message: CallbackQuery, state: FSMContext) -> None:
+    id = message.data.split(':', 1)[1]  # noqa #type: ignore
     await state.set_state(AddMarkup.adding_private)
-    await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_travel_menu, text=Templates.SEND_FILE)  # noqa #type: ignore
+    await safe_message_edit(message, Templates.SEND_FILE, reply_markup=kb_go_back_generate(id))  # noqa #type: ignore
 
 
 @ router.callback_query(F.data.startswith(Commands.PUBLIC.value))
 async def add_public_markup_handler(message: CallbackQuery, state: FSMContext) -> None:
+    id = message.data.split(':', 1)[1]  # noqa #type: ignore
     await state.set_state(AddMarkup.adding_public)
-    await message.bot.send_message(chat_id=message.message.chat.id, reply_markup=kb_travel_menu, text=Templates.SEND_FILE)  # noqa #type: ignore
+    await safe_message_edit(message, Templates.SEND_FILE, reply_markup=kb_go_back_generate(id))  # noqa #type: ignore
 
 
 @ router.message(AddMarkup.adding_public, ~F.text.startswith('/'), F.document | F.photo)
