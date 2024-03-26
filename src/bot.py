@@ -68,14 +68,14 @@ async def catch_timeout_exc(event: ErrorEvent):
             event.update.callback_query.from_user.id, Errors.TIMEOUT.value)  # noqf #type: ignore
 
 
-# @dp.error()
-# async def catch_all_exc(event: ErrorEvent):
-#     if event.update.message:
-#         await event.update.message.bot.send_message(  # noqa #type: ignore
-#             event.update.message.from_user.id, Errors.SERVICE_METEO.value)  # noqa #type: ignore
-#     else:
-#         await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
-#             event.update.callback_query.from_user.id, Errors.SERVICE_METEO.value)  # noqf #type: ignore
+@dp.error()
+async def catch_all_exc(event: ErrorEvent):
+    if event.update.message:
+        await event.update.message.bot.send_message(  # noqa #type: ignore
+            event.update.message.from_user.id, Errors.WENT_WRONG.value)  # noqa #type: ignore
+    else:
+        await event.update.callback_query.message.bot.send_message(  # noqa #type: ignore
+            event.update.callback_query.from_user.id, Errors.WENT_WRONG.value)  # noqf #type: ignore
 
 
 async def main() -> None:
@@ -83,7 +83,6 @@ async def main() -> None:
     bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=["message", "edited_channel_post", "callback_query"])
-    # await db.delete_tables()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
