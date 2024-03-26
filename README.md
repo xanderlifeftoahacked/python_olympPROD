@@ -8,11 +8,22 @@
 ## Инструкция по запуску
 Для запуска контейнера необходимы Docker, Docker-Compose и включенный docker.service. Пример запуска контейнера на arch-linux:
 ```
+~ » sudo pacman -Sy docker docker-compose git
 ~ » git clone git@github.com:Central-University-IT-prod/backend-xanderlifeftoahacked.git
-~ » sudo pacman -Sy docker docker-compose
 ~ » sudo systemctl start docker
 ~ » cd backend-xanderlifeftoahacked
 ~/backend-xanderlifeftoahacked (main) » sudo docker-compose up --build
+```
+Пример запуска вне контейнера:
+```
+~ » sudo pacman -Sy python python-virtualenv git
+~ » git clone git@github.com:Central-University-IT-prod/backend-xanderlifeftoahacked.git
+~ » cd backend-xanderlifeftoahacked
+~/backend-xanderlifeftoahacked (main) » python -m venv venv
+~/backend-xanderlifeftoahacked (main) » source venv/bin/activate
+~/backend-xanderlifeftoahacked (main) (venv) » pip install -r requirements.txt --upgrade pip
+~/backend-xanderlifeftoahacked (main) (venv) » export BOT_TOKEN=...  // скопировать переменные окружения из docker-compose.yml
+~/backend-xanderlifeftoahacked (main) (venv) » python src/bot.py
 ```
 
 ## Функционал бота
@@ -47,9 +58,19 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
 
 ### Построение маршрутов
 Первый пункт меню помощника. Можно построить маршрут от своего местоположения до первой точки путешествия. Либо маршрут через все точки 
-путешествия. Результат пользователь получает в виде фотографии. Очередность локаций в маршруте определяется датами их посещения.
+путешествия. Результат пользователь получает в виде фотографии. Очередность локаций в маршруте определяется датами их посещения. 
+На данный момент межконтинентальные маршруты невозможны
+
+_upd: В поздних версиях появился выбор между источниками статических карт (быстрый, но проприетарный/помедленнее, но  open-source)_
 
 https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/5e0c2ac4-50b1-479f-942c-7b3453be69f6
+
+### Просмотр отелей
+Второй пункт меню помощника. Покажет ближашие номера (название отеля, описание, цена) доступные на даты посещения места. 
+Также отправит карту, на которой будут отмечены отели. 
+
+https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/c075fc76-d174-4604-a1fc-66ccc8b42568
+
 
 ### Просмотр погоды
 Третий пункт меню помощника. Покажет прогноз погоды на даты посещения локации (но только на те, что не позже 16 дней от текущей) . 
@@ -57,12 +78,24 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
 
 https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/982f009c-9649-4a74-a51f-309464284c3a
 
+### Просмотр кафе и ресторанов
+Четвертый пункт меню помощника. Вернет список кафе и ресторанов с названиями, адресами, временем работы и ссылками на их сайты (если таковые присутствуют).
+Отправит соответствующую карту.
+
+https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/01f00e07-1318-48fc-89f6-6277d11b7216
+
+
 ### Просмотр достопримечательностей
-Пятый пункт меню помощника. Отправит десять самых популярных достопримечательностей в радиусе 10 километров от выбранной локации. Также отправит карту, 
+Пятый пункт меню помощника. Отправит десять самых популярных достопримечательностей (название, адрес, описание) в радиусе 10 километров от выбранной локации. Также отправит карту, 
 на которой эти достопримечательности будут отмечены.
 
 https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/f93be38b-e5cf-4797-b178-a42e1908cea6
 
+### Переводчик
+В путешествии очень удобно иметь возможность быстро записать чей-то голос и увидеть его перевод. Так же есть обратная возможность - наговорить текст на русском 
+и получить перевод на русский язык.
+
+https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/assets/61379005/b66a893f-76d1-4897-ac7d-1428e8b9d42e
 
 
 
@@ -70,7 +103,7 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
 ### СУБД
 В качестве СУБД была выбрана SQLite (для работы с ней используется асинхронный драйвер). Другим вариантом мог быть PostgreSQL, предлагающий больший функционал, однако функционала SQLite мне более чем достаточно. К тому же, SQLite выигрывает у Postgres в скорости.
 От кэширования (например, с помощью Redis) я отказался по причине того, что выигрыш в скорости получения и записи данных был бы нивелирован временем ожидания ответов от API (даже самого Telegram).   
-### Библиотеки
+### Библиотеки (многие из них очень маленькие, в несколько классов (прослойки для взаимодействия с API))
   * **Aiogram** - один из популярных фреймворков для работы с Telegram Bot Api. Был выбран исходя из рекомендаций сообщества.
   * **SQLAlchemy** - ORM для более удобной и безопасной работы с базой данных.
   * **Aiosqlite** - асинхронный драйвер для базы данных.
@@ -80,15 +113,25 @@ https://github.com/Central-University-IT-prod/backend-xanderlifeftoahacked/asset
   * **Polyline** - используется для декодирования маршрутов, полученных от API
   * **Dateparser** - используется для распознования дат
   * **Pillow** - используется для работы с изображениями
+  * **Staticmap** - испольуется для получения изображений карты
   * **TimezonefinderL** - используется для получения часового пояса из координат
+  * **AssemblyAI** - используется для извлечения текста из голосовых сообщений
+  * **Translate** - используется для перевода текста
 ### Сторонние API
 #### OSM-based (используют OSM):
   * **Nominatim** ([repo](https://github.com/osm-search/Nominatim)) - используется для геокодинга (через geopy)
   * **Graphhopper** ([repo](https://github.com/graphhopper/graphhopper)) - используется для построения маршрутов
-  * **Geoapify (static map api)** ([osm wiki](https://wiki.openstreetmap.org/wiki/Geoapify)) - используется для получения изображений с маршрутом
+  * **OSM carto** ([repo](https://github.com/gravitystorm/openstreetmap-carto/)) - используется для получения изображений с маршрутом (через библиотеку staticmap)
 #### Остальные:
   * **Open-meteo** ([repo](https://github.com/frenck/python-open-meteo)) - используется для получения данных о погоде (через одноименную библиотеку)
-  * **Foursquare** ([page](https://location.foursquare.com/)) - используется для получения данных о достопримечательностях и кафе
+  * **Foursquare** ([page](https://location.foursquare.com/)) - используется для получения данных о достопримечательностях и кафе (разрешено около 40 тыс. бесплатных запросов в месяц)
+  * **Static API yandex** ([page](https://yandex.ru/maps-api/products/static-api)) - используется как альтернативный способ получения изображения маршрута, очень быстрое (используется тариф 'бесплатный')
+  * **Amadeus** ([page](https://developers.amadeus.com/)) - единственное API для поиска отелей, которым возможно пользоваться бесплатно (из тех, что я находил). База отелей очень маленькая, информации о каждом
+    отдельном номере/отеле тоже очень мало. Работает долго. Однако ничего более сносного не нашлось.
+  * **Yandex поиск организаций** ([page](https://yandex.ru/maps-api/products/geosearch-api)) - API для поиска кафе и ресторанов. Очень быстрое, информации достаточно (использутся тариф 'пробный')
+  * **AssemblyAI** ([page](https://www.assemblyai.com/)) - используется для извлечения текста из голосовых сообщений (через одноименную библиотеку)
+  * **MyMemory** ([repo](https://github.com/UlionTse/translators)) - используется библиотекой translate для перевода
+      
  
 ## Структура базы данных
 
