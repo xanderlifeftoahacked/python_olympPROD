@@ -1,6 +1,7 @@
+from sqlalchemy import JSON, Column, Integer, String
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import JSON, Column, Float, Integer, String, Boolean
+
 import restrictions
 
 engine = create_async_engine('sqlite+aiosqlite:///db/database.db')

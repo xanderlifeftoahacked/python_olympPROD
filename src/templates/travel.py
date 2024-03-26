@@ -1,6 +1,6 @@
 from enum import Enum
 
-from api.gettime import get_date_formatted, get_date_obj, get_date_str_from_obj
+from api.gettime import get_date_obj, get_date_str_from_obj
 
 
 class Templates(Enum):

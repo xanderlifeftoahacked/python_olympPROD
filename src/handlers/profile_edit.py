@@ -1,17 +1,18 @@
-from aiogram import F, Router
-from aiogram.types import CallbackQuery, Message
-from aiogram.fsm.context import FSMContext
 import re
 
-from commands.profile import *
-from commands.common import CommonCommands
-from templates.profile import *
-from restrictions import *
-from repository import UserRepository
-from utils import safe_message_edit
-from keyboards.common import kb_main
-from fsm.profile import SettingProfile
+from aiogram import F, Router
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
+
 from api.getlocation import get_country_city, get_country_city_from_raw
+from commands.common import CommonCommands
+from commands.profile import *
+from fsm.profile import SettingProfile
+from keyboards.common import kb_main
+from repository import UserRepository
+from restrictions import *
+from templates.profile import *
+from utils import safe_message_edit
 from validation import age_regex
 
 router = Router()
@@ -104,5 +105,5 @@ async def age_chosen(message: Message, state: FSMContext):
         await message.answer(text=Templates.ST_BAD_AGE.value)
         return
     await UserRepository.update_by_id(message.from_user.id, {'age': age})  # noqa #type: ignore
-    await message.answer(text='Возраст изменен')
+    await message.answer(text=Templates.ST_AGE_CHANGED.value)
     await state.set_state(None)

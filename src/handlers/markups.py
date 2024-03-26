@@ -1,18 +1,17 @@
-from aiogram import Router
-from aiogram import F
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, FSInputFile, Message
-from aiogram.fsm.context import FSMContext
 
+from api.gettime import get_current_datetime
+from commands.markups import Commands
 from fsm.markups import AddMarkup, Markup
-from storage import delete_file, get_file_path,  transliterate, validate_path
-from templates.markups import *
+from keyboards.markups import (kb_go_back_generate, kb_markup_actions_generate,
+                               kb_select_type, kb_show_markups_generate)
+from keyboards.travel import kb_travel_menu
 from repository import TravelRepository
 from restrictions import *
-from commands.markups import *
-from api.gettime import get_current_datetime
-from keyboards.travel import kb_travel_menu
-from keyboards.markups import kb_markup_actions_generate, kb_select_type, kb_go_back_generate, kb_show_markups_generate
+from storage import delete_file, get_file_path, transliterate, validate_path
+from templates.markups import Templates
 from utils import safe_message_edit
 
 router = Router()

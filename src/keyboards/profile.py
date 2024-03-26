@@ -1,7 +1,8 @@
 from aiogram import types
-from utils import inline_button, button
-from commands.profile import *
+
 from commands.common import CommonCommands
+from commands.profile import Commands
+from utils import inline_button
 
 kb_edit_profile = types.InlineKeyboardMarkup(
     inline_keyboard=[[inline_button(Commands.PROFILE_DATA.value)],

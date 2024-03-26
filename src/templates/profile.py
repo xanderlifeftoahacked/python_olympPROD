@@ -13,6 +13,7 @@ class Templates(Enum):
     ST_BAD_LOC = 'Не удалось определить локацию. Попробуйте еще'
     ST_CITY_CHANGED = 'Город изменен.'
     ST_REGISTERED = 'Регистрация завершена!'
+    ST_AGE_CHANGED = 'Возраст изменен!'
 
 
 class TemplatesGen:

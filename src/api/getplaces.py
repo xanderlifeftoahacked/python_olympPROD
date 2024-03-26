@@ -4,18 +4,8 @@ from typing import List, Tuple
 from api.httpxclient import client
 from templates.travel_helper import Templates, TemplatesGen
 
-if getenv('RUNNING_DOCKER'):
-    FORSQUARE_TOKEN = str(getenv('FORSQUARE_TOKEN'))
-    YANDEX_ORG_TOKEN = 'dfac9118-8857-4bac-a6f4-099871519e81'
-
-FORSQUARE_TOKEN = 'fsq3n82dG/o43vPRF1tApjgx2Z2wqeVjAzmYRO6KFEG7VZc='  # TODO
-YANDEX_ORG_TOKEN = 'dfac9118-8857-4bac-a6f4-099871519e81'  # TODO
-
-headers = {
-    'accept': 'application/json',
-    'Accept-Language': 'ru',
-    'Authorization': FORSQUARE_TOKEN
-}
+FORSQUARE_TOKEN = str(getenv('FORSQUARE_TOKEN'))
+YANDEX_ORG_TOKEN = 'dfac9118-8857-4bac-a6f4-099871519e81'
 
 
 def get_url_interesting_places(lat: float, lon: float):
@@ -67,6 +57,12 @@ async def get_cafes(lat: float, lon: float) -> Tuple[str, List]:
 
 
 async def get_interesting_places(lat: float, lon: float) -> Tuple[str, List]:
+    headers = {
+        'accept': 'application/json',
+        'Accept-Language': 'ru',
+        'Authorization': FORSQUARE_TOKEN
+    }
+
     response = await client.get(url=get_url_interesting_places(lat, lon), headers=headers)
     if response.status_code != 200 or not response.json():
         return Templates.OPENTRIP_ERROR.value, []

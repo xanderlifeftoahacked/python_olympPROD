@@ -1,29 +1,28 @@
 import asyncio
 import logging
 import sys
-import httpx
-
-from templates.errors import *
-import db
-
 from os import getenv
-from aiogram import F, Bot, Dispatcher
+
+import httpx
+from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
 from geopy.exc import GeocoderServiceError
-from lib.openmeteo.exceptions import OpenMeteoError
 
-from handlers.profile_add import router as registration_router
-from handlers.welcome import router as welcome_router
+import db
 from handlers.markups import router as markup_router
+from handlers.profile_add import router as registration_router
 from handlers.profile_edit import router as edit_profile_router
+from handlers.translate import router as translate_router
 from handlers.travel_add import router as travel_add_router
 from handlers.travel_edit import router as travel_edit_router
+from handlers.travel_help_common import router as travel_help_common_router
 from handlers.travel_help_route import router as travel_help_route_router
 from handlers.travel_help_weather import router as travel_help_weather_router
-from handlers.travel_help_places import router as travel_help_places_router
-from handlers.travel_help_hotels import router as travel_help_hotels_router
+from handlers.welcome import router as welcome_router
+from lib.openmeteo.exceptions import OpenMeteoError
+from templates.errors import Errors
 
 TOKEN = str(getenv("BOT_TOKEN"))
 
@@ -32,7 +31,7 @@ dp.include_routers(registration_router, welcome_router,
                    edit_profile_router, travel_add_router,
                    travel_edit_router, markup_router,
                    travel_help_route_router, travel_help_weather_router,
-                   travel_help_places_router, travel_help_hotels_router)
+                   travel_help_common_router, translate_router)
 
 
 @dp.error(ExceptionTypeFilter(GeocoderServiceError))
@@ -58,6 +57,7 @@ async def catch_meteo_exc(event: ErrorEvent):
 
 
 @dp.error(ExceptionTypeFilter(httpx.ConnectTimeout))
+@dp.error(ExceptionTypeFilter(httpx.ReadTimeout))
 async def catch_timeout_exc(event: ErrorEvent):
     print('CONNECTION TIMEOUT')
     if event.update.message:
@@ -68,7 +68,6 @@ async def catch_timeout_exc(event: ErrorEvent):
             event.update.callback_query.from_user.id, Errors.TIMEOUT.value)  # noqf #type: ignore
 
 
-#
 # @dp.error()
 # async def catch_all_exc(event: ErrorEvent):
 #     if event.update.message:

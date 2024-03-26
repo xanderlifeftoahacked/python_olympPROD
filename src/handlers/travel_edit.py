@@ -1,26 +1,29 @@
 import re
-from aiogram import Router
-from aiogram import F
+
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State
 from aiogram.types import CallbackQuery, Message
-from aiogram.fsm.context import FSMContext
 
-from templates.travel import *
+import validation
+from api.getlocation import get_location, get_location_from_raw
+from api.gettime import (get_current_datetime, get_date_formatted,
+                         get_date_obj, get_date_str_from_obj)
+from commands.common import CommonCommands
+from commands.travel import Commands
+from fsm.travel import EditTravel
+from keyboards.common import kb_input, kb_is_valid
+from keyboards.travel import (kb_travel_actions_generate,
+                              kb_travel_delete_generate,
+                              kb_travel_edit_generate,
+                              kb_travel_friend_actions_generate,
+                              kb_travel_friends_generate, kb_travel_menu,
+                              kb_travel_places_generate)
+from keyboards.travel_helper import kb_select_help
 from repository import TravelRepository, UserRepository
 from restrictions import *
-from commands.travel import *
-from fsm.travel import EditTravel
-from commands.common import CommonCommands
-from api.getlocation import get_location, get_location_from_raw
-from api.gettime import get_date_formatted, get_date_obj, get_date_str_from_obj, get_current_datetime
-from keyboards.travel import kb_travel_delete_generate, kb_travel_edit_generate, kb_travel_friend_actions_generate, kb_travel_friends_generate, kb_travel_places_generate
-from keyboards.common import kb_input, kb_is_valid
-from keyboards.travel import kb_travel_menu, kb_travel_actions_generate
-from keyboards.travel_helper import kb_select_help
+from templates.travel import Templates, TemplatesGen
 from utils import safe_message_edit
-import validation
-
 
 router = Router()
 
@@ -80,10 +83,11 @@ async def deleted_place_handler(message: CallbackQuery, state: FSMContext) -> No
     location_index = int(full_id.split(':')[2])
     travel_id_for_button = ':'.join(full_id.split(':')[0:2])
     travel_data = await TravelRepository.select_by_id(travel_id)
-    travel_data['places'].pop(location_index)
+    places = sorted(travel_data['places'], key=lambda x: x[3])
+    places.pop(location_index)
 
     await state.set_state(None)
-    await TravelRepository.update_by_id(travel_id, {'places': travel_data['places']})
+    await TravelRepository.update_by_id(travel_id, {'places': places})
     await safe_message_edit(message, Templates.DELETED_PLACE.value, reply_markup=kb_travel_edit_generate(travel_id_for_button))
 
 
@@ -236,7 +240,7 @@ async def delete_friend_handler(message: CallbackQuery, state: FSMContext):
     await message.bot.send_message(chat_id=message.message.chat.id, text=Templates.DELETED_FRIEND)  # noqa #type: ignore
 
 
-@router.message(EditTravel.changing_places, F.location)
+@ router.message(EditTravel.changing_places, F.location)
 async def select_place_handler(message: Message, state: FSMContext) -> None:
     if not message.location:
         await message.answer(text=Templates.BAD_PLACE.value)
@@ -252,7 +256,7 @@ async def select_place_handler(message: Message, state: FSMContext) -> None:
     await message.answer(text=TemplatesGen.is_location_good(loc), reply_markup=kb_is_valid)
 
 
-@router.message(EditTravel.changing_places, ~F.text.startswith('/'))
+@ router.message(EditTravel.changing_places, ~F.text.startswith('/'))
 async def select_place_handler_str(message: Message, state: FSMContext) -> None:
     place = message.text
     await message.bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)  # noqa #type: ignore

@@ -1,21 +1,20 @@
 from io import BytesIO
-from aiogram import Router
-from aiogram import F
+
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, CallbackQuery
-from aiogram.fsm.context import FSMContext
-from api.gethotels import get_hotels
-from api.getplaces import get_cafes, get_interesting_places
 
+from api.gethotels import get_hotels
 from api.getmap import make_markers_map
-from keyboards.travel_helper import kb_go_back_generate
-from keyboards.travel_helper import kb_select_place_generate
-from repository import TravelRepository
-from templates.travel_helper import *
-from templates.travel import TemplatesGen as TravelTemplatesGen
+from api.getplaces import get_cafes, get_interesting_places
+from commands.travel_helper import Commands
 from fsm.travel_help import Helper
+from keyboards.travel_helper import (kb_go_back_generate,
+                                     kb_select_place_generate)
+from repository import TravelRepository
 from restrictions import *
-from commands.travel_helper import *
+from templates.travel import TemplatesGen as TravelTemplatesGen
+from templates.travel_helper import Templates, TemplatesGen
 from utils import safe_message_edit
 
 router = Router()

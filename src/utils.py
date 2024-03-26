@@ -1,5 +1,6 @@
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton
+from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton)
 from aiogram.types.callback_query import CallbackQuery
 
 
@@ -27,7 +28,7 @@ async def safe_message_edit(
     if callback.message is None:
         return
     try:
-        await callback.message.edit_text(new_text, reply_markup=reply_markup)  # noqa #type: ignore
+        await callback.message.edit_text(new_text, reply_markup=reply_markup, disable_web_page_preview=True)  # noqa #type: ignore
     except TelegramBadRequest as e:
         print(e)
         await callback.answer(None)

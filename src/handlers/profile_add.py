@@ -1,20 +1,21 @@
-from aiogram import F, Router
-from aiogram.types import CallbackQuery, Message
-from aiogram.fsm.context import FSMContext
 import re
 
-from commands.profile import *
+from aiogram import F, Router
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
+
+from api.getlocation import get_country_city, get_country_city_from_raw
 from commands.common import CommonCommands
-from templates.profile import *
-from restrictions import *
-from fsm.profile import *
-from repository import UserRepository
-from utils import safe_message_edit
-from keyboards.profile import kb_edit_profile, kb_is_valid, kb_reg
+from commands.profile import Commands
+from fsm.profile import RegisterProfile
 from keyboards.common import kb_main
 from keyboards.location import kb_get_location
+from keyboards.profile import kb_edit_profile, kb_is_valid, kb_reg
+from repository import UserRepository
+from restrictions import *
+from templates.profile import Templates, TemplatesGen
+from utils import safe_message_edit
 from validation import age_regex
-from api.getlocation import get_country_city, get_country_city_from_raw
 
 router = Router()
 

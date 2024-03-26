@@ -1,6 +1,7 @@
 from typing import Any, List, Tuple
-from geopy.geocoders import Nominatim
+
 from geopy.adapters import AioHTTPAdapter
+from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent='xander_traveltg',
                        adapter_factory=AioHTTPAdapter, timeout=5)  # noqa #type: ignore

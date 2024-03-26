@@ -1,8 +1,9 @@
 from aiogram import types
-from utils import inline_button, button, inline_button_with_id
+
+from commands.common import CommonCommands
 from commands.travel_helper import Commands
 from templates.travel_helper import *
-from commands.common import CommonCommands
+from utils import inline_button_with_id
 
 
 def kb_select_help(id):
@@ -16,8 +17,6 @@ def kb_select_help(id):
                              Commands.CAFES_INFO.value, id),
                           inline_button_with_id(
                              Commands.ATTRACTIONS_INFO.value, id)],
-                         [inline_button_with_id(
-                             Commands.FRIEND_FIND.value, id)],
                          [inline_button_with_id(CommonCommands.GO_BACK.value, id)]])
 
 

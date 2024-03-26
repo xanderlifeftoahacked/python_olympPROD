@@ -1,8 +1,9 @@
 from aiogram import types
-from utils import inline_button, button, inline_button_with_id
-from commands.travel import *
-from commands.markups import Commands as MarkupCommands
+
 from commands.common import CommonCommands
+from commands.markups import Commands as MarkupCommands
+from commands.travel import Commands
+from utils import inline_button, inline_button_with_id
 
 
 def kb_select_type(id):
@@ -34,5 +35,10 @@ def kb_show_markups_generate(markups, id):
 
 def kb_markup_actions_generate(full_travel_id, user_id, owner_id):
     if str(user_id) == str(owner_id):
-        return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(MarkupCommands.GET_MARKUP.value), inline_button(MarkupCommands.DELETE_MARKUP.value)], [inline_button_with_id(CommonCommands.GO_BACK.value, full_travel_id)]])
-    return types.InlineKeyboardMarkup(inline_keyboard=[[inline_button(MarkupCommands.GET_MARKUP.value)], [inline_button_with_id(CommonCommands.GO_BACK.value, full_travel_id)]])
+        return types.InlineKeyboardMarkup(
+            inline_keyboard=[[inline_button(MarkupCommands.GET_MARKUP.value),
+                              inline_button(MarkupCommands.DELETE_MARKUP.value)],
+                             [inline_button_with_id(CommonCommands.GO_BACK.value, full_travel_id)]])
+    return types.InlineKeyboardMarkup(
+        inline_keyboard=[[inline_button(MarkupCommands.GET_MARKUP.value)],
+                         [inline_button_with_id(CommonCommands.GO_BACK.value, full_travel_id)]])

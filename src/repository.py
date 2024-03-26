@@ -1,4 +1,3 @@
-from typing import Tuple
 from sqlalchemy import Column, select
 
 import db
@@ -92,7 +91,8 @@ class TravelRepository:
     @classmethod
     async def name_exists(cls, name: str, owner: int) -> bool:
         async with db.new_session() as session:
-            travel = await session.execute(select(db.TravelTable).where(db.TravelTable.name == name, db.TravelTable.owner == owner))
+            travel = await session.execute(select(db.TravelTable).where(
+                db.TravelTable.name == name, db.TravelTable.owner == owner))
             if travel.scalar():
                 return True
             else:

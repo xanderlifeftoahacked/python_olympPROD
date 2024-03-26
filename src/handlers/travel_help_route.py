@@ -1,18 +1,18 @@
-from aiogram import Router
 from io import BytesIO
-from aiogram import F
+
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, CallbackQuery, Message
-from aiogram.fsm.context import FSMContext
-from api.getlocation import get_location_from_raw
 
+from api.getlocation import get_location_from_raw
 from api.getmap import get_route_image
+from commands.travel_helper import Commands
 from fsm.travel_help import Helper
-from keyboards.travel_helper import kb_go_back_generate, kb_select_route_type, kb_select_source_generate
+from keyboards.travel_helper import (kb_go_back_generate, kb_select_route_type,
+                                     kb_select_source_generate)
 from repository import TravelRepository
-from templates.travel_helper import *
 from restrictions import *
-from commands.travel_helper import *
+from templates.travel_helper import Templates, TemplatesGen
 from utils import safe_message_edit
 
 router = Router()

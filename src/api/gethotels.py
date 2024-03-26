@@ -1,16 +1,11 @@
 from os import getenv
 from typing import List, Tuple
 
-import httpx
-
 from api.httpxclient import client
 from templates.travel_helper import Templates, TemplatesGen
 
-if getenv('RUNNING_DOCKER'):
-    FORSQUARE_TOKEN = str(getenv('AMADEUS_TOKEN'))
-
-AMADEUS_TOKEN = 'NtqTBIoB2WebG58PviubAiyfR2sZYwZV'
-AMADEUS_SECRET = 'A6pSL5d5Lac3zIHL'
+AMADEUS_TOKEN = str(getenv('AMADEUS_TOKEN'))
+AMADEUS_SECRET = str(getenv('AMADEUS_SECRET'))
 
 
 async def request_hotels_list(lat: float, lon: float, token: str):

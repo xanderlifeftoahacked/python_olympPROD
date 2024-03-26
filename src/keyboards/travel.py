@@ -1,8 +1,9 @@
 from aiogram import types
-from utils import inline_button, button, inline_button_with_id
-from commands.travel import *
-from commands.markups import Commands as MarkupCommands
+
 from commands.common import CommonCommands
+from commands.markups import Commands as MarkupCommands
+from commands.travel import Commands
+from utils import button, inline_button_with_id
 
 kb_travel_menu = types.ReplyKeyboardMarkup(
     keyboard=[[button(Commands.ADD_TRAVEL.value)],

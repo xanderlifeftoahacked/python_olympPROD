@@ -1,21 +1,22 @@
-from aiogram import Router
-from aiogram import F
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
-from aiogram.fsm.context import FSMContext
 
-from templates.travel import *
+from api.getlocation import get_location, get_location_from_raw
+from api.gettime import (get_current_datetime, get_date_formatted,
+                         get_date_obj, get_date_str_from_obj)
+from commands.common import CommonCommands
+from commands.travel import Commands
+from fsm.travel import AddTravel
+from keyboards.common import kb_input, kb_is_valid
+from keyboards.profile import kb_reg
+from keyboards.travel import (kb_travel_actions_generate,
+                              kb_travel_friend_actions_generate,
+                              kb_travel_menu)
 from repository import TravelRepository, UserRepository
 from restrictions import *
-from commands.travel import *
-from fsm.travel import AddTravel
-from commands.common import CommonCommands
-from api.getlocation import get_location, get_location_from_raw
-from api.gettime import get_date_formatted, get_date_obj, get_date_str_from_obj, get_current_datetime
-from keyboards.profile import kb_reg
-from keyboards.common import kb_input, kb_is_valid
-from keyboards.travel import kb_travel_actions_generate, kb_travel_menu, kb_travel_friend_actions_generate
 from templates.profile import Templates as TemplatesProfile
+from templates.travel import Templates, TemplatesGen
 from utils import safe_message_edit
 
 router = Router()
@@ -191,7 +192,6 @@ async def bad_place_handler(message: CallbackQuery, state: FSMContext) -> None:
 async def end_input_handler(message: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     data.pop('cur_loc')
-    print(data)
     data['owner'] = message.from_user.id
     await state.set_state(None)
     user = await UserRepository.select_by_id(message.from_user.id)

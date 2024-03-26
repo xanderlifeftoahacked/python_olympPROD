@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from timezonefinderL import TimezoneFinder
+
 from lib.openmeteo import DailyParameters, OpenMeteo
 from templates.travel_helper import Templates, TemplatesGen
 

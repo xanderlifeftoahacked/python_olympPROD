@@ -1,6 +1,7 @@
-from typing import Any
-import dateparser as dp
 from datetime import datetime
+from typing import Any
+
+import dateparser as dp
 
 
 def get_current_datetime() -> datetime:
