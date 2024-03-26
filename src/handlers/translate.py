@@ -33,7 +33,7 @@ async def selected_type(message: CallbackQuery, state: FSMContext) -> None:
     else:
         await state.update_data(to_russian=False)
 
-    await message.bot.send_message(chat_id=message.from_user.id, text=Templates.SELECT_LANG.value, reply_markup=kb_select_lang)  # noqa #type: ignore
+    await safe_message_edit(message, Templates.SELECT_LANG.value, reply_markup=kb_select_lang)  # noqa #type: ignore
 
 
 @ router.callback_query(Translating.choosing_language)
