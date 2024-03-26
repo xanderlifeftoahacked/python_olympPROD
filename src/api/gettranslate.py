@@ -1,6 +1,6 @@
 import asyncio
 from io import BytesIO
-from os import remove
+from os import getenv, remove
 from random import randint
 
 import assemblyai as aai
@@ -8,7 +8,7 @@ from translate import Translator
 
 from templates.translate import Templates
 
-aai.settings.api_key = "f0aabb17cc3d4a0ba2ddef1c0e5816aa"
+aai.settings.api_key = getenv('AAI_TOKEN')
 
 
 async def translate(voice: BytesIO, lang_from: str, lang_to: str) -> str:

@@ -15,7 +15,7 @@ services:
       - YANDEX_ORG_TOKEN=dfac9118-8857-4bac-a6f4-099871519e81
       - AMADEUS_TOKEN=NtqTBIoB2WebG58PviubAiyfR2sZYwZV
       - AMADEUS_SECRET=A6pSL5d5Lac3zIHL
-      - RUNNING_DOCKER=1
+      - AAI_TOKEN=f0aabb17cc3d4a0ba2ddef1c0e5816aa
 
 
 
