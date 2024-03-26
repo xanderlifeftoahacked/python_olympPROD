@@ -88,6 +88,7 @@ async def add_markup_handler(message: CallbackQuery, state: FSMContext) -> None:
 async def add_private_markup_handler(message: CallbackQuery, state: FSMContext) -> None:
     id = message.data.split(':', 1)[1]  # noqa #type: ignore
     await state.set_state(AddMarkup.adding_private)
+    await state.update_data(is_pulic=False)
     await safe_message_edit(message, Templates.SEND_FILE, reply_markup=kb_go_back_generate(id))  # noqa #type: ignore
 
 
@@ -95,6 +96,7 @@ async def add_private_markup_handler(message: CallbackQuery, state: FSMContext) 
 async def add_public_markup_handler(message: CallbackQuery, state: FSMContext) -> None:
     id = message.data.split(':', 1)[1]  # noqa #type: ignore
     await state.set_state(AddMarkup.adding_public)
+    await state.update_data(is_pulic=True)
     await safe_message_edit(message, Templates.SEND_FILE, reply_markup=kb_go_back_generate(id))  # noqa #type: ignore
 
 
@@ -116,7 +118,7 @@ async def sent_markup(message: Message, state: FSMContext) -> None:
 
     travel_data = await TravelRepository.select_by_id(state_data['travel_id'])
 
-    if await state.get_state() == AddMarkup.adding_public:
+    if state_data['is_pulic']:
         visible = True
     else:
         visible = False
