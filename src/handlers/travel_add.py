@@ -39,14 +39,14 @@ async def list_travels_handler(message: Message, state: FSMContext) -> None:
     await message.bot.delete_message(chat_id=user_id, message_id=message.message_id)  # noqa #type: ignore
     if not user['travels']:  # noqa #type: ignore
         await message.answer(Templates.NO_TRAVELS.value, reply_markup=kb_travel_menu)
-    else:
-        for (id, travel) in enumerate(user['travels'], start=1):  # noqa #type: ignore
-            travel = await TravelRepository.select_by_id(travel)
-            travel_id = f'{travel["id"]}:{id}'  # noqa #type: ignore
-            if user_id == travel['owner']:
-                await message.answer(text=TemplatesGen.travel(travel, id), reply_markup=kb_travel_actions_generate(travel_id))
-            else:
-                await message.answer(text=TemplatesGen.travel(travel, f'пользователя {travel["owner"]}'), reply_markup=kb_travel_friend_actions_generate(travel_id))
+        return
+    for (id, travel) in enumerate(user['travels'], start=1):  # noqa #type: ignore
+        travel = await TravelRepository.select_by_id(travel)
+        travel_id = f'{travel["id"]}:{id}'  # noqa #type: ignore
+        if user_id == travel['owner']:
+            await message.answer(text=TemplatesGen.travel(travel, id), reply_markup=kb_travel_actions_generate(travel_id))
+        else:
+            await message.answer(text=TemplatesGen.travel(travel, f'пользователя {travel["owner"]}'), reply_markup=kb_travel_friend_actions_generate(travel_id))
 
 
 @router.message(F.text == Commands.ADD_TRAVEL.value)
@@ -203,5 +203,4 @@ async def end_input_handler(message: CallbackQuery, state: FSMContext) -> None:
         await UserRepository.update_by_id(message.from_user.id, {'travels': user['travels']})  # noqa #type: ignore
     else:
         await UserRepository.update_by_id(message.from_user.id, {'travels': [travel_id]})  # noqa #type: ignore
-    # await message.bot.send_message(reply_markup=kb_travel_menu)   # noqa #type: ignore
     await safe_message_edit(message, TemplatesGen.travel(data, len_t + 1))  # noqa #type: ignore
