@@ -8,14 +8,14 @@ services:
       - ./media:/app/media
       - ./db:/app/db
     environment:
-      - BOT_TOKEN=7046888785:AAHA_DVDVz3ry93xMQVDlvImi21zXtotyLw
-      - GRAPHHOPPER_TOKEN=41b99b2f-0843-4ccc-947b-89ef6cefade4
-      - FORSQUARE_TOKEN=fsq3n82dG/o43vPRF1tApjgx2Z2wqeVjAzmYRO6KFEG7VZc=
-      - YANDEX_TILES_TOKEN=3e88d9f7-785e-434f-af61-30864930eae3
-      - YANDEX_ORG_TOKEN=dfac9118-8857-4bac-a6f4-099871519e81
-      - AMADEUS_TOKEN=NtqTBIoB2WebG58PviubAiyfR2sZYwZV
-      - AMADEUS_SECRET=A6pSL5d5Lac3zIHL
-      - AAI_TOKEN=f0aabb17cc3d4a0ba2ddef1c0e5816aa
+      - BOT_TOKEN=
+      - GRAPHHOPPER_TOKEN=
+      - FORSQUARE_TOKEN=
+      - YANDEX_TILES_TOKEN=
+      - YANDEX_ORG_TOKEN=
+      - AMADEUS_TOKEN=
+      - AMADEUS_SECRET=
+      - AAI_TOKEN=
 
 
 

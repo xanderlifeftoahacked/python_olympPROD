@@ -6,3 +6,4 @@ media/*
 !media/.gitkeep
 db/*
 !db/.gitkeep
+tokens.txt
